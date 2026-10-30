@@ -69,6 +69,10 @@ export function createFigure({ svg, scene, steps, label, onDrag }) {
   el("path", { d: "M20 0H0V20", class: "fig-grid" }, pattern);
   el("rect", { x: 0, y: 0, width: VIEW.w, height: VIEW.h, fill: "url(#fig-grid)" }, svg);
 
+  // Fallback for browsers that ignore touch-action on SVG: a non-passive
+  // touchmove that cancels scrolling while a finger is on the figure (BUG-004).
+  svg.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
+
   const layer = {};
   for (const name of ["fill", "construction", "lines", "points", "labels", "handles"]) {
     layer[name] = el("g", { class: `layer-${name}` }, svg);

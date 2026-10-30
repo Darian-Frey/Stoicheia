@@ -150,7 +150,18 @@ a:hover { color: var(--amber-hi); }
 
 .figure.is-degenerate { border-color: var(--amber); border-style: dashed; }
 
-.figure svg { width: 100%; height: auto; display: block; }
+.figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* The figure is an instrument, not a page: touches on it drag, never
+     scroll or select (BUG-004). touch-action is ignored on SVG child
+     elements in mobile browsers, so it must sit on the <svg> itself. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
 
 .side {
   flex: 1 1 300px;
@@ -369,7 +380,6 @@ a:hover { color: var(--amber-hi); }
   fill: none;
   pointer-events: all;
   cursor: grab;
-  touch-action: none;
 }
 
 .fig-handle.is-dragging { cursor: grabbing; }

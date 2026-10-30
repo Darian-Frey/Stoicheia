@@ -30,6 +30,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 ### Removed
 - `proof` field from the proposition schema (D-010).
 ### Fixed
+- Touch-dragging a point no longer scrolls the page: `touch-action: none` moved to the figure's `<svg>`, with a non-passive `touchmove` fallback (BUG-004).
 - `ccw`/`cw` restricted to `xCC` in SPEC §Branch selection; they cannot choose between line–circle candidates (BUG-003).
 - I.1's C is `pick: "cw"` (above AB on screen), not `"ccw"`: SPEC, D-008 and AV-003 corrected (BUG-002, found by `test_geom.mjs`).
 - SPEC example `title` for I.1 replaced with Heath's wording (BUG-001; AV-004).

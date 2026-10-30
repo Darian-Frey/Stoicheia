@@ -9,7 +9,14 @@ Severity vocabulary: low | medium | high.
 
 ## Open
 
-_None._
+### BUG-004: Touch-dragging a point scrolls the page instead
+**Status:** open
+**Found:** 2026-10-30 (author's phone test of the live I.1 page, F-002)
+**Location:** docs/css/instrument.css (`.fig-handle`), docs/js/render.js
+**Severity:** high
+**Description.** On a phone, touching A or B moves it a little, then the page starts scrolling and the point stops following until the finger is lifted. `touch-action: none` was set only on the SVG handle circles; mobile browsers ignore `touch-action` on SVG child elements, so the browser claims the gesture as a scroll and sends `pointercancel`. Dragging on touch devices, an F-002 acceptance criterion, was effectively broken.
+**Reproduction.** Live I.1 page on a phone: drag A upwards. Headless Chrome with touch emulation at 390 px: a mostly vertical touch drag from A scrolled the page 111 px and moved A only ~6 units.
+**Notes.** Fix: `touch-action: none` (plus `user-select: none`, `-webkit-touch-callout: none`) on the figure's `<svg>`, so no touch on the figure scrolls the page, as the author asked; a non-passive `touchmove` → `preventDefault` on the SVG as a fallback. The page still scrolls from touches outside the figure. Fix applied 2026-10-30 and verified under headless-Chrome touch emulation (no scroll, A follows the full gesture; swipes outside the figure still scroll); stays open until confirmed on the author's phone. Related: F-002, F-014, AV-006.
 
 ## Fixed
 
