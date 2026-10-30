@@ -10,21 +10,14 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 - `design/instrument/` — reference mock-up of I.1: `Instrument.dc.html` (exact design values in inline styles) and `instrument-I1.pdf`. Layout reference only; its step text is a paraphrase, not Heath (D-004). `support.js` and `vendor/` are the mock-up's viewer runtime, not part of the site.
 - `docs/js/geom.js` — written 2026-10-30, all SPEC §Kernel functions; `tools/test_geom.mjs` passes (19 tests).
 - `docs/js/scene.js` — written 2026-10-30; `tools/test_scene.mjs` passes (12 tests).
-- `render.js`, `stepper.js`, `readout.js`, `prop.js`, `instrument.css`, `prop.html`, `data/props/01.js` — written 2026-10-30; I.1 renders and drags end to end in headless Chrome (all acceptance checks pass). Author checked visually 2026-10-30; F-003–F-006 and F-015 Complete. F-002 awaits a real touch-device drag test; F-007 partial until Phase 2.
+- `render.js`, `stepper.js`, `readout.js`, `prop.js`, `instrument.css`, `prop.html`, `data/props/01.js` — written 2026-10-30; I.1 renders and drags end to end in headless Chrome (all acceptance checks pass). Author checked visually and on a phone 2026-10-30; F-002–F-006 and F-015 Complete; F-007 partial until Phase 2.
 - Documentation — complete first pass 2026-10-29 (README, FEATURES, ROADMAP, ARCHITECTURE, DECISIONS D-001–D-010 (D-008–D-010 added 2026-10-30), SPEC, ATTACK_VECTORS AV-001–AV-008, BUGS, IMPROVEMENTS, CHANGELOG, LICENSE).
 
 ## Active task
 
-**Phase 1 — Foundation** (ROADMAP). Build the pipeline end to end on Proposition I.1:
+**Phase 1 — Foundation: Complete (2026-10-30).** I.1 is live at https://darian-frey.github.io/Stoicheia/prop.html?p=1 and passed its acceptance checks, including the author's visual check and a phone touch test (BUG-004 fixed). F-001–F-006 and F-015 Complete; F-007 partial until `defs.html` exists.
 
-1. `geom.js` with the SPEC table of functions and a Node test script in `tools/test_geom.mjs` (F-001).
-2. `scene.js` with dependency recompute and `pick` branch memory (F-002, AV-003).
-3. `render.js`, `stepper.js`, `readout.js`, `prop.js` (F-005, F-006, F-003).
-4. `instrument.css` from SPEC §Theme tokens (F-015).
-5. `data/props/01.js` and `prop.html` rendering I.1 (F-004).
-6. Heath's I.1 text with citations, each linked to its final `defs.html` anchor; links resolve once Phase 2 builds `defs.html` (F-007 partial).
-
-Acceptance: I.1 drags correctly at every step, readout passes with residual 0.000, dragging A around B keeps C on the same side of directed AB, dragging A through B moves C to the other side of the screen with no stale frame (D-008), A dragged onto B shows DEGENERATE not an error.
+**Next: Phase 2 — Constructions and congruence (I.2–I.8)** (ROADMAP). Not started; wait for the author's go-ahead. Each data file's Heath text is transcribed from the scan (Internet Archive `thirteenbookseu02heibgoog`) and checked line by line before it is marked done (AV-004).
 
 ## Invariants
 

@@ -4,7 +4,7 @@ Phases follow the natural arcs of Book I. Phases are append-only; mark Complete 
 
 ## Phase 1 — Foundation
 **Goal:** Prove the whole pipeline on Proposition I.1: kernel, drag, stepper, readout, theme.
-**Status:** Not started
+**Status:** Complete (2026-10-30)
 **Features delivered:** F-001, F-002, F-003, F-004, F-005, F-006, F-015; F-007 partial (Heath text and citations rendered; links target `defs.html` anchors that resolve in Phase 2)
 **Deliverables:**
 - [x] `docs/js/geom.js` with unit tests in `tools/test_geom.mjs` (Node)

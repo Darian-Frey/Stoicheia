@@ -1,7 +1,7 @@
 > **Status:** Active
 > **Provenance:** Shane Hartley (author); Claude (scaffolding and layout mock-ups, 2026-10-27 → 2026-10-29)
-> **Last reviewed:** 2026-10-29
-> **Why this status:** Design direction settled (Instrument theme); Phase 1 (kernel + Proposition I.1) about to begin.
+> **Last reviewed:** 2026-10-30
+> **Why this status:** Phase 1 complete: kernel, scene, page shell and Proposition I.1 live on GitHub Pages. Phase 2 (I.2–I.8, index, definitions page) next.
 
 # Stoicheia
 

@@ -21,6 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - `polygon` constructor in `scene.js`; SPEC gains `polygon`, `role`, step `short`, `brief`, paragraph breaks in step text, and drag snapping.
 - README links to the live I.1 page on GitHub Pages.
 ### Changed
+- Phase 1 Complete. F-002 Complete after the author's phone test; BUG-004 confirmed fixed on device.
 - F-003, F-004, F-005, F-006, F-015 Complete after the author's visual check of I.1. F-002 pending a touch-device test.
 - F-001 Complete: kernel and tests meet the acceptance criteria.
 - F-001 acceptance reworded: kernel is point-and-scalar only (IMP-004 applied).

@@ -31,7 +31,7 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 - Given (free) points are draggable with mouse and touch.
 - Every dependent object recomputes on each pointer move, in dependency order, with no stale frames.
 - Intersection branch choice is stable under drag (the chosen point does not flip to the other intersection without crossing a degeneracy). See AV-003.
-**Status:** Not started
+**Status:** Complete (2026-10-30)
 
 #### F-003 Numeric QED check
 **Priority:** Must
