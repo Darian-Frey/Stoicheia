@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Instrument — Proposition I.1</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#15171A}
+a{color:#E8B86D}a:hover{color:#FFD28A}
+</style>
+</helmet>
+<div style="min-height: 900px; box-sizing: border-box; background: #15171A; color: #D9D4C7; font-family: 'IBM Plex Mono', monospace; display: flex; flex-direction: column">
+
+  <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 32px; background: #1E2125; border-bottom: 2px solid #2C3036">
+    <div style="display: flex; align-items: center; gap: 14px">
+      <span style="font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 600; letter-spacing: 0.14em; color: #F2EBDD">STOICHEIA</span>
+      <span style="font-size: 11px; letter-spacing: 0.12em; color: #8E8A7F; padding: 3px 8px; border: 1px solid #3A3F46; border-radius: 3px">BK I · PROP 01 / 48</span>
+    </div>
+    <nav style="display: flex; flex-wrap: wrap; gap: 22px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase">
+      <a href="#" style="text-decoration: none">Index</a>
+      <a href="#" style="text-decoration: none">Defs</a>
+      <a href="#" style="text-decoration: none">Posts</a>
+      <a href="#" style="text-decoration: none">Graph</a>
+    </nav>
+  </header>
+
+  <div style="padding: 22px 32px 0; display: flex; flex-direction: column; gap: 6px">
+    <h1 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-weight: 500; font-size: 34px; line-height: 1.1; color: #F2EBDD">On a given finite straight line to construct an equilateral triangle.</h1>
+    <div style="font-size: 13px; color: #8E8A7F">GIVEN: finite straight line AB &nbsp;·&nbsp; REQUIRED: equilateral triangle on AB</div>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 24px; padding: 22px 32px; flex: 1 1 auto">
+
+    <div style="flex: 999 1 560px; min-width: 0; background: #0E1013; border: 2px solid #2C3036; border-radius: 6px; padding: 10px; box-shadow: inset 0 0 0 1px #1C1F23">
+      <svg viewBox="0 0 600 470" role="img" aria-label="Construction of an equilateral triangle on AB, revealed step by step" style="width: 100%; height: auto; display: block">
+        <defs>
+          <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#1C2026" stroke-width="1"></path></pattern>
+        </defs>
+        <rect x="0" y="0" width="600" height="470" fill="url(#grid)"></rect>
+        <sc-if value="{{showA}}" hint-placeholder-val="{{true}}">
+          <circle cx="220" cy="290" r="160" fill="none" stroke="#5FA8A3" stroke-width="1.5" stroke-dasharray="6 5"></circle>
+        </sc-if>
+        <sc-if value="{{showB}}" hint-placeholder-val="{{true}}">
+          <circle cx="380" cy="290" r="160" fill="none" stroke="#5FA8A3" stroke-width="1.5" stroke-dasharray="6 5"></circle>
+        </sc-if>
+        <sc-if value="{{showTri}}" hint-placeholder-val="{{true}}">
+          <polygon points="220,290 380,290 300,151.4" fill="#E8B86D" fill-opacity="0.12"></polygon>
+          <line x1="220" y1="290" x2="300" y2="151.4" stroke="#E8B86D" stroke-width="2.5"></line>
+          <line x1="380" y1="290" x2="300" y2="151.4" stroke="#E8B86D" stroke-width="2.5"></line>
+          <circle cx="300" cy="151.4" r="6" fill="#E8B86D"></circle>
+          <text x="292" y="136" font-family="IBM Plex Mono, monospace" font-size="20" fill="#E8B86D">C</text>
+        </sc-if>
+        <line x1="220" y1="290" x2="380" y2="290" stroke="#F2EBDD" stroke-width="2.5"></line>
+        <circle cx="220" cy="290" r="6" fill="#F2EBDD"></circle>
+        <circle cx="380" cy="290" r="6" fill="#F2EBDD"></circle>
+        <text x="208" y="320" font-family="IBM Plex Mono, monospace" font-size="20" fill="#F2EBDD">A</text>
+        <text x="382" y="320" font-family="IBM Plex Mono, monospace" font-size="20" fill="#F2EBDD">B</text>
+      </svg>
+    </div>
+
+    <aside style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+      <div style="background: #1E2125; border: 1px solid #2C3036; border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+        <div style="font-size: 11px; letter-spacing: 0.14em; color: #8E8A7F">READOUT</div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; font-size: 13px">
+          <div style="background: #0E1013; padding: 8px; border-radius: 3px; display: flex; flex-direction: column; gap: 4px"><span style="color: #8E8A7F">|AB|</span><span style="color: #F2EBDD; font-weight: 600">1.000</span></div>
+          <div style="background: #0E1013; padding: 8px; border-radius: 3px; display: flex; flex-direction: column; gap: 4px"><span style="color: #8E8A7F">|AC|</span><span style="color: #F2EBDD; font-weight: 600">1.000</span></div>
+          <div style="background: #0E1013; padding: 8px; border-radius: 3px; display: flex; flex-direction: column; gap: 4px"><span style="color: #8E8A7F">|BC|</span><span style="color: #F2EBDD; font-weight: 600">1.000</span></div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5FA8A3"><span style="width: 8px; height: 8px; border-radius: 50%; background: #5FA8A3; display: inline-block"></span>EQUILATERAL · residual 0.000</div>
+      </div>
+
+      <div style="background: #1E2125; border: 1px solid #2C3036; border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; flex: 1 1 auto">
+        <div style="font-size: 11px; letter-spacing: 0.14em; color: #8E8A7F">STEP {{stepLabel}}</div>
+        <div style="font-family: 'Barlow Condensed', sans-serif; font-size: 22px; line-height: 1.2; color: #F2EBDD">{{stepTitle}}</div>
+        <div style="font-size: 13px; line-height: 1.6; color: #D9D4C7">{{stepBody}}</div>
+        <div style="font-size: 12px; color: #E8B86D; margin-top: auto">{{stepRef}}</div>
+      </div>
+    </aside>
+  </div>
+
+  <footer style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 14px 32px; background: #1E2125; border-top: 2px solid #2C3036">
+    <button onClick="{{prev}}" aria-label="Previous step" style="min-width: 56px; height: 44px; background: #2C3036; color: #F2EBDD; border: 1px solid #3A3F46; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; cursor: pointer">◀</button>
+    <button onClick="{{next}}" aria-label="Next step" style="min-width: 56px; height: 44px; background: #E8B86D; color: #15171A; border: 1px solid #E8B86D; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; cursor: pointer">▶</button>
+    <div style="display: flex; gap: 6px; margin-left: 8px">
+      <sc-for list="{{pips}}" as="p" hint-placeholder-count="5">
+        <button onClick="{{p.go}}" aria-label="{{p.label}}" style="{{p.style}}"></button>
+      </sc-for>
+    </div>
+    <div style="font-size: 12px; color: #8E8A7F; letter-spacing: 0.1em; margin-left: auto">GIVEN · CIRCLE A · CIRCLE B · JOIN · Q.E.F.</div>
+    <a href="#" style="font-size: 12px; letter-spacing: 0.1em; text-decoration: none">NEXT PROP ▸</a>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { step: 4 }; }
+  renderVals() {
+    const steps = [
+      { title: 'The given line', body: 'Let AB be the given finite straight line. Nothing is yet constructed; A and B may be dragged.', ref: 'Given' },
+      { title: 'Circle with centre A', body: 'With centre A and distance AB describe the circle BCD.', ref: '[Postulate 3]' },
+      { title: 'Circle with centre B', body: 'With centre B and distance BA describe the circle ACE. The two circles meet at C.', ref: '[Postulate 3]' },
+      { title: 'Join CA and CB', body: 'From C, where the circles cut one another, draw the straight lines CA and CB.', ref: '[Postulate 1]' },
+      { title: 'Q.E.F.', body: 'AC = AB (A is centre of BCD). BC = BA (B is centre of ACE). Things equal to the same thing are equal: CA = CB. So CA, AB, BC are equal and ABC is equilateral.', ref: '[Def. 15, Common Notion 1]' }
+    ];
+    const s = this.state.step;
+    const cur = steps[s];
+    const pips = steps.map((st, i) => ({
+      label: 'Go to step ' + i,
+      go: () => this.setState({ step: i }),
+      style: 'width: 28px; height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer; position: relative; box-shadow: inset 0 -4px 0 ' + (i <= s ? '#E8B86D' : '#3A3F46')
+    }));
+    return {
+      showA: s >= 1, showB: s >= 2, showTri: s >= 3,
+      stepLabel: s + ' / 4', stepTitle: cur.title, stepBody: cur.body, stepRef: cur.ref,
+      pips,
+      prev: () => this.setState({ step: Math.max(0, s - 1) }),
+      next: () => this.setState({ step: Math.min(4, s + 1) })
+    };
+  }
+}
+</script>
+</body>
+</html>
