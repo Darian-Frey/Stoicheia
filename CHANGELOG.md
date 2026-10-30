@@ -14,7 +14,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - Vendored fonts in `docs/fonts/`: IBM Plex Mono 400/500/600 (IBM's Latin1 subsets) and Barlow Condensed 500/600, with OFL licences and `SOURCES.txt` (D-009).
 - Directory skeleton (`docs/`, `tools/`) and Instrument reference mock-up in `design/instrument/`.
 - IMP-002–IMP-006 logged.
+- `docs/js/geom.js`: kernel per SPEC §Kernel (F-001); `tools/test_geom.mjs`, 19 tests on `node:test`.
 ### Changed
+- F-001 Complete: kernel and tests meet the acceptance criteria.
 - F-001 acceptance reworded: kernel is point-and-scalar only (IMP-004 applied).
 - Tool scripts standardised on `.mjs` (`tools/test_geom.mjs`, `tools/lint_props.mjs`); Node ≥ 22.7 noted in CLAUDE.md (IMP-002 applied).
 - F-007 split across phases: partial in Phase 1 (text and citations), complete in Phase 2 (links resolve) (IMP-003 applied).
@@ -22,4 +24,5 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 ### Removed
 - `proof` field from the proposition schema (D-010).
 ### Fixed
+- I.1's C is `pick: "cw"` (above AB on screen), not `"ccw"`: SPEC, D-008 and AV-003 corrected (BUG-002, found by `test_geom.mjs`).
 - SPEC example `title` for I.1 replaced with Heath's wording (BUG-001; AV-004).

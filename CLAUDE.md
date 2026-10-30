@@ -8,7 +8,7 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 
 - `docs/`, `tools/` — directory skeleton created 2026-10-30 (`.gitkeep` placeholders); no code yet.
 - `design/instrument/` — reference mock-up of I.1: `Instrument.dc.html` (exact design values in inline styles) and `instrument-I1.pdf`. Layout reference only; its step text is a paraphrase, not Heath (D-004). `support.js` and `vendor/` are the mock-up's viewer runtime, not part of the site.
-- `docs/js/geom.js` — not started. Contracts in SPEC.md §Kernel.
+- `docs/js/geom.js` — written 2026-10-30, all SPEC §Kernel functions; `tools/test_geom.mjs` passes (19 tests).
 - `docs/data/props/01.js` — not started. Schema in SPEC.md §Proposition data.
 - Documentation — complete first pass 2026-10-29 (README, FEATURES, ROADMAP, ARCHITECTURE, DECISIONS D-001–D-010 (D-008–D-010 added 2026-10-30), SPEC, ATTACK_VECTORS AV-001–AV-008, BUGS, IMPROVEMENTS, CHANGELOG, LICENSE).
 

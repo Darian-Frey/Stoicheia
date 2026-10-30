@@ -9,7 +9,18 @@ Severity vocabulary: low | medium | high.
 
 ## Open
 
-_None yet._
+_None._
+
+## Fixed
+
+### BUG-002: I.1's C is specified on the wrong side of AB
+**Status:** fixed
+**Found:** 2026-10-30 (writing `tools/test_geom.mjs` for F-001)
+**Location:** SPEC.md §Scene object schema (example `pick: "ccw"` for C) and §Branch selection (I.1 paragraph); DECISIONS.md D-008 (Decision); ATTACK_VECTORS.md AV-003 (Description)
+**Severity:** medium
+**Description.** The docs place I.1's C at `pick: "ccw"`, "the positive-orientation side of directed AB". With screen y downward, that is the intersection *below* AB on screen: at the mock-up position A(220, 290), B(380, 290), the `"ccw"` point is (300, 428.6). The mock-up and Heath's figure put C above AB, at (300, 151.4), which is the `"cw"` point. CLAUDE.md's pitfall ("ccw in SPEC is screen-space orientation, which is clockwise on paper") describes exactly this trap. Built as specified, I.1 would open with the triangle hanging below AB.
+**Reproduction.** `node tools/test_geom.mjs`, test "xCC: I.1 at the mock-up position": `xCC(A,160,B,160)[0]` (positive orientation) has y > 290.
+**Notes.** Proposed fix: `pick: "cw"` for C in the SPEC example and wherever I.1 is described; "negative-orientation side" in D-008 and AV-003. D-008's substance (rule-first, not continuity) is unaffected; only the named side changes. Related: D-008, AV-003.
 
 <!--
 ### BUG-001: {short title}
@@ -20,9 +31,7 @@ _None yet._
 **Description.** {What's wrong and why it matters.}
 **Reproduction.** {Minimum steps: which proposition, which drag.}
 **Notes.** {Related AV-/D-/IMP- entries.}
--->
-
-## Fixed
+--> Fixed 2026-10-30: SPEC example and §Branch selection now say `pick: "cw"` / negative-orientation side; D-008 Decision and AV-003 Description corrected with a pointer here.
 
 ### BUG-001: SPEC example title is a paraphrase, not Heath
 **Status:** fixed

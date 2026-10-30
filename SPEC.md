@@ -44,12 +44,12 @@ Every object constructed from a two-point intersection declares `pick` in its da
 
 The declared rule decides on every recompute; the figure is a function of the givens' positions, not of drag history (D-008). The scene also stores the last chosen point, used only as a numerical safeguard: when the configuration is within δ of tangency (the two candidates are less than `δ · max(1, r)` apart, `δ = 1e-3`, r the largest radius involved), or when the rule scores the two candidates within τ of each other, it keeps the candidate nearest the previous value.
 
-In I.1, `pick: "ccw"` keeps C on the positive-orientation side of directed AB. Dragging A around B keeps C on that side; dragging A through B reverses AB, so C moves to the other side of the screen. That is correct behaviour, not a flip. Screen-relative rules (`"above"` etc.) reintroduce real flips when the defining line passes vertical or horizontal; justify each use in the data file. (AV-003.)
+In I.1, `pick: "cw"` keeps C on the negative-orientation side of directed AB, which with A left of B is above AB on screen, as in Heath's figure (y is downward, so screen "cw" is counter-clockwise on paper; BUG-002). Dragging A around B keeps C on that side; dragging A through B reverses AB, so C moves to the other side of the screen. That is correct behaviour, not a flip. Screen-relative rules (`"above"` etc.) reintroduce real flips when the defining line passes vertical or horizontal; justify each use in the data file. (AV-003.)
 
 ## Scene object schema
 
 ```js
-{ id: "C", kind: "point", by: "xCC", of: ["circA", "circB"], pick: "ccw" }
+{ id: "C", kind: "point", by: "xCC", of: ["circA", "circB"], pick: "cw" }
 { id: "circA", kind: "circle", by: "circle", of: ["A", "B"] }   // centre A, through B
 { id: "AC", kind: "segment", by: "join", of: ["A", "C"] }
 { id: "A", kind: "point", free: true, at: {x:220, y:290} }

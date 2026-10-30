@@ -22,7 +22,7 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 - `geom.js` works on points `{x, y}` and scalars only; lines are passed as point pairs and circles as centre and radius. Object shapes (segment, circle, …) belong to the scene layer (SPEC.md §Scene object schema).
 - Intersection functions exist for line–line, line–circle, circle–circle; each returns zero, one, or two points and never throws.
 - Distance, midpoint, perpendicular foot, angle at a vertex are available and unit-tested against hand-computed values to 1e-9.
-**Status:** Not started
+**Status:** Complete (2026-10-30)
 **Notes:** Contracts in SPEC.md §Kernel.
 
 #### F-002 Draggable givens with dependency recompute

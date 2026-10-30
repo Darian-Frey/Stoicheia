@@ -169,7 +169,7 @@ All Tier 1 documents are present. `BUGS.md` and `IMPROVEMENTS.md` are adopted (i
 - **A. Rule-first.** The declared `pick` rule decides on every recompute; branch memory (nearest previous point) is used only when the configuration is within δ of tangency, where the rule is numerically unreliable. The figure is a function of the givens' positions alone. Chosen.
 - **B. Continuity-first.** The rule seeds the initial choice; thereafter the scene keeps whichever candidate is nearest the previous value. Matches the old acceptance wording, but the figure becomes path-dependent and can place a point on the opposite side of a line from the one Heath's proof states. Rejected.
 
-**Decision.** Option A. Heath fixes sides relative to lines ("on the same side", "on the other side of"), which is exactly what orientation-based `pick` rules encode, so the figure cannot contradict the proof text. In I.1, C is always on the positive-orientation side of directed AB; dragging A through B moves C to the other side of the screen, and that is correct behaviour.
+**Decision.** Option A. Heath fixes sides relative to lines ("on the same side", "on the other side of"), which is exactly what orientation-based `pick` rules encode, so the figure cannot contradict the proof text. In I.1, C is always on the negative-orientation (`"cw"`) side of directed AB, which is above AB on screen when A is left of B (corrected 2026-10-30, BUG-002); dragging A through B moves C to the other side of the screen, and that is correct behaviour.
 
 **Consequences.**
 - Same givens, same figure, regardless of drag path; the linter can test a static grid rather than replaying paths.
