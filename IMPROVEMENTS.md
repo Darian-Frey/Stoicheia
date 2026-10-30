@@ -23,8 +23,20 @@ Effort vocabulary: trivial | small | medium | large.
 **Trade-offs.** OCR cleaning is tedious and itself error-prone, so the corpus needs its own one-off manual check; until then it could give false confidence. Adds a 48-file corpus to the repo that is not served.
 **Notes.** Natural Phase 5 task; would move AV-004 from manual to automated detection.
 
-### IMP-005: `uses` spelling differs from the citation grammar
+### IMP-006: Derive `cite` and `uses` from inline citations
 **Status:** suggested
+**Found:** 2026-10-30 (while settling IMP-005)
+**Location:** SPEC.md §Proposition data, ATTACK_VECTORS.md (AV-005), `tools/lint_props.mjs`
+**Effort:** small
+**Description.** Since D-010, each step's `text` carries its citations inline (`[Post. 3]`). The `cite` field repeats them and `uses` repeats their union, so every data file holds each citation up to three times and the linter must check they agree.
+**Proposal.** Drop `cite` (footer built from the inline citations, plus a per-step `given: true` flag for the `Given` label) and derive `uses` as the union across steps. AV-005's linter check reduces to grammar and `I.N` ordering.
+**Trade-offs.** Removes a class of sync errors; costs at-a-glance readability of a step's citations in the data file, and `uses` is no longer a literal the graph page can read without parsing text.
+**Notes.** Best decided while writing `01.js`, when the duplication is concrete.
+
+## Applied
+
+### IMP-005: `uses` spelling differs from the citation grammar
+**Status:** applied
 **Found:** 2026-10-30 (while removing the `proof` field from SPEC §Proposition data)
 **Location:** SPEC.md §Proposition data, ATTACK_VECTORS.md (AV-005)
 **Effort:** trivial
@@ -32,8 +44,7 @@ Effort vocabulary: trivial | small | medium | large.
 **Proposal.** Spell `uses` entries with the citation grammar (`"Def. 15"`, `"C.N. 1"`), and allow `cite` to be empty (or the literal `Given`, explicitly whitelisted) for steps that rely on nothing.
 **Trade-offs.** None of substance; must be settled before `01.js` is written.
 **Notes.** Found in passing; not applied (Maintenance Rule 8).
-
-## Applied
+**Resolution.** 2026-10-30: `uses` entries spelt with the citation grammar; `Given` admitted as a standalone `cite` label, rendered unlinked and excluded from the `uses` check. SPEC §Proposition data and AV-005 updated.
 
 ### IMP-003: F-007 scheduled in Phase 1 but depends on Phase 2 pages
 **Status:** applied

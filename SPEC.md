@@ -53,9 +53,12 @@ In I.1, `pick: "ccw"` keeps C on the positive-orientation side of directed AB. D
 { id: "circA", kind: "circle", by: "circle", of: ["A", "B"] }   // centre A, through B
 { id: "AC", kind: "segment", by: "join", of: ["A", "C"] }
 { id: "A", kind: "point", free: true, at: {x:220, y:290} }
+{ id: "D", kind: "point", by: "xLC", of: ["A", "B", "circA"], pick: "far:B", mark: "label" }
 ```
 
 `kind` ∈ `point | segment | ray | line | circle | angleMark`. `by` names a constructor the scene layer maps to kernel calls. `of` references only earlier ids (ARCHITECTURE invariant 1).
+
+`mark: "label"` (points only, optional) draws the letter alone: no dot, no drag handle. It is for *naming points*, letters Heath uses to name a figure (the D in "the circle BCD") that Euclid does not construct. Place them where Heath's figure does; in I.1, D and E are the far intersections of line AB with circles A and B. A naming point whose intersection is empty is hidden, like any other derived object.
 
 ## Proposition data (`data/props/NN.js`)
 
@@ -63,7 +66,7 @@ In I.1, `pick: "ccw"` keeps C on the positive-orientation side of directed AB. D
 export default {
   n: 1,
   kind: "problem",            // "problem" (Q.E.F.) | "theorem" (Q.E.D.)
-  title: "To construct an equilateral triangle on a given finite straight line.",
+  title: "On a given finite straight line to construct an equilateral triangle.",
   short: "Equilateral triangle",
   given: "Let AB be the given finite straight line.",
   objects: [ /* scene object schema, dependency order */ ],
@@ -78,7 +81,7 @@ export default {
   claims: [
     { label: "EQUILATERAL", eq: ["AB","AC","BC"], from: 3 }   // active from step index 3
   ],
-  uses: ["Def.15", "Post.1", "Post.3", "CN.1"],  // foundations and props ("I.4") this relies on
+  uses: ["Def. 15", "Post. 1", "Post. 3", "C.N. 1"],  // foundations and props ("I.4"), spelt as citations
   arc: "constructions"
 };
 ```
@@ -87,7 +90,7 @@ Each step's `text` is Heath's wording for that stage of the construction or proo
 
 Claim forms: `eq` (all equal), `gt: [a, b]`, `parallel: [seg, seg]`, `on: [point, line]`, `perp: [seg, seg]`, `areaEq: [poly, poly]`, `angleEq: [[A,V,B],[C,W,D]]`, `sum: {parts:[…], whole:…}`.
 
-Citation strings use exactly: `Def. N`, `Post. N`, `C.N. N`, `I.N`. The linter rejects anything else.
+Citation strings use exactly: `Def. N`, `Post. N`, `C.N. N`, `I.N`, both inline in step text and in `cite` and `uses`. The linter rejects anything else, with one exception: `cite: "Given"` marks a step that states the hypothesis and relies on nothing. `Given` must stand alone (never in a list), renders as plain unlinked text, and is excluded from the `uses` check.
 
 ## Arcs (`data/arcs.js`)
 
@@ -118,9 +121,9 @@ Citation strings use exactly: `Def. N`, `Post. N`, `C.N. N`, `I.N`. The linter r
 
 `--amber-hi` is link hover; `--grid-line` is the figure's 20 px grid; `--rule-inner` is the figure frame's 1 px inset shadow. Values from `design/instrument/Instrument.dc.html`.
 
-Fonts are vendored as woff2 in `docs/fonts/` with their SIL OFL licence and declared by `@font-face` in `instrument.css`: IBM Plex Mono 400/500/600, Barlow Condensed 500/600. No third-party font requests (D-009).
+Fonts are vendored as woff2 in `docs/fonts/` with their SIL OFL licence and declared by `@font-face` in `instrument.css`: IBM Plex Mono 400/500/600 (`ibm-plex-mono-NNN.woff2`), Barlow Condensed 500/600 (`barlow-condensed-NNN.woff2`). Latin-1 coverage only; symbols such as ◀ ▶ ✓ fall back to system fonts. Provenance in `docs/fonts/SOURCES.txt`. No third-party font requests (D-009).
 
-Figure styling: givens and given lines in `--ink`; construction circles `--teal` dashed `6 5` at 1.5 px; result segments `--amber` at 2.5 px; points r = 6; labels 20 px mono. Minimum touch target 44 px on transport controls.
+Figure styling: givens and given lines in `--ink`; construction circles `--teal` dashed `6 5` at 1.5 px; result segments `--amber` at 2.5 px; points r = 6; labels 20 px mono; naming points (`mark: "label"`) letter only, `--ink-3`, 16 px mono. Minimum touch target 44 px on transport controls.
 
 ## URLs
 

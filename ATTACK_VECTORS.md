@@ -41,12 +41,12 @@ Severity: Critical (must hold) | Major (regression on release blocks) | Minor (t
 **Description.** Heath's text retyped from memory drifts: a wrong letter (CDB vs CBD), a missing "respectively", a swapped "greater"/"less". Readers trust the text; a wrong letter in a 48-page corpus is nearly invisible and silently miseducates.
 **Detection.** Manual: every proposition's proof is checked line by line against a scanned Heath (Internet Archive, 1908 Cambridge edition) before its data file is marked done; the checking date goes in the data file's header comment. No automated detection; a public-domain Heath text corpus for diffing would be a Phase 5 improvement.
 **Related decisions.** D-004.
-**History.** Identified 2026-10-29.
+**History.** Identified 2026-10-29. First observed 2026-10-30, in SPEC.md's own schema example (I.1 title paraphrased); caught by checking against the scan (BUG-001).
 
 ### AV-005 Wrong or missing citation
 **Severity:** Major
 **Description.** A proof step cites `Post. 2` where Heath's marginal note says `Post. 1`, or cites nothing. The dependency graph (F-012) is generated from `uses`, so a wrong citation also corrupts the graph.
-**Detection.** Linter: every `cite` string matches the SPEC grammar, every cited `I.N` has N < current proposition, and the set of citations in step texts and `cite` fields equals the `uses` list. Correctness of the citation itself is checked manually alongside AV-004.
+**Detection.** Linter: every `cite` string matches the SPEC grammar (or is exactly `Given`, which is excluded from the `uses` comparison), every cited `I.N` has N < current proposition, and the set of citations in step texts and `cite` fields equals the `uses` list. Correctness of the citation itself is checked manually alongside AV-004.
 **Related decisions.** D-003, D-004.
 **History.** Identified 2026-10-29.
 

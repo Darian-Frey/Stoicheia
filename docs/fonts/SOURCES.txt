@@ -1,0 +1,15 @@
+Vendored web fonts (D-009). Both families are licensed under the
+SIL Open Font License 1.1; licence texts alongside.
+
+ibm-plex-mono-{400,500,600}.woff2
+  IBM Plex Mono 2.327, IBM's own Latin1 subset (Regular, Medium, SemiBold)
+  npm @ibm/plex-mono 2.5.0, fonts/split/woff2/IBMPlexMono-*-Latin1.woff2
+  Unmodified. Licence: OFL-IBMPlexMono.txt (Reserved Font Name "Plex";
+  using IBM's own subsets avoids redistributing a third-party modification).
+
+barlow-condensed-{500,600}.woff2
+  Barlow Condensed (fonts.gstatic.com v13, latin subset)
+  Unmodified. Licence: OFL-BarlowCondensed.txt (no Reserved Font Name).
+
+Retrieved 2026-10-30. Glyphs outside Latin-1 (e.g. the transport arrows,
+check marks) fall back to system fonts per glyph.

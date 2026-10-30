@@ -195,7 +195,7 @@ All Tier 1 documents are present. `BUGS.md` and `IMPROVEMENTS.md` are adopted (i
 **Decision.** Option A. Only the weights the design uses are committed (Plex Mono 400/500/600, Barlow Condensed 500/600), Latin subset, with the OFL text alongside. `instrument.css` declares them with `@font-face` and `font-display: swap`.
 
 **Consequences.**
-- A few hundred KB of binary assets in the repo.
+- About 100 KB of binary assets in the repo (five woff2 files; provenance in `docs/fonts/SOURCES.txt`).
 - Greek glyphs (candidate Greek text toggle) would need a wider subset or another family.
 
 **Reversal conditions.** Revisit if the font files need frequent updating or the Greek toggle requires a family that cannot be vendored.
@@ -219,6 +219,7 @@ All Tier 1 documents are present. `BUGS.md` and `IMPROVEMENTS.md` are adopted (i
 - One copy of the proof text per proposition, so one place for AV-004 checking.
 - Steps must be cut where Heath's text naturally divides; a step's construction and its justification may share a card.
 - Long proofs (I.44–I.47) mean long step cards; the card must scroll gracefully.
+- Because the card text names objects by Heath's lettering, every letter Heath uses must appear in the figure. Letters Euclid does not construct (D, E in I.1) are drawn as label-only naming points (SPEC §Scene object schema, `mark: "label"`). This is a small departure from the Instrument mock-up, which shows only A, B, C. (Added 2026-10-30.)
 
 **Reversal conditions.** Revisit if readers need the whole proof visible at once (e.g. for printing or the long propositions), in which case a read-only "full text" view assembled from the step texts is the first option to try.
 
