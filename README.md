@@ -7,6 +7,8 @@
 
 Stoicheia (Στοιχεῖα, "Elements") is an interactive rebuild of Euclid's *Elements*, Book I — all 48 propositions — as a static website. Each proposition is a live construction: the given points can be dragged, the dependent construction recomputes, the proof is revealed step by step, and a readout panel shows the claimed equality holding numerically as you move things. It is built for one reader first (the author, working through Euclidean geometry on the way to mechanics) and for anyone else who wants to see the first book of the *Elements* move rather than read it flat. It is deliberately plain: HTML, vanilla JavaScript and SVG, no build step, served from GitHub Pages.
 
+**Live:** [Proposition I.1](https://darian-frey.github.io/Stoicheia/prop.html?p=1). Only I.1 is built so far; the index page arrives in Phase 2.
+
 ## Quick Start
 
 ```bash

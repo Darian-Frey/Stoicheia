@@ -24,6 +24,7 @@ Phases follow the natural arcs of Book I. Phases are append-only; mark Complete 
 - [ ] `docs/index.html` with arc grouping and miniatures
 - [ ] `docs/defs.html`
 - [ ] Prev/next navigation
+- [ ] README live link points at the site root, and the "Only I.1 is built" note is removed
 **Acceptance:** Props 1–8 pass; index links to each; defs anchors resolve from proof citations.
 
 ## Phase 3 — Perpendiculars, angles, inequalities (I.9–I.26)
