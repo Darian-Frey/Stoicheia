@@ -38,8 +38,8 @@ Lengths are in SVG units; angles in radians. Area claims use the same rule on si
 
 Every object constructed from a two-point intersection declares `pick` in its data entry:
 
-- `"ccw"` / `"cw"` — the point with positive / negative orientation relative to the two defining centres (for `xCC`) or the two line points (for `xLC`).
-- `"near:<id>"` / `"far:<id>"` — the point closer to / farther from another object.
+- `"ccw"` / `"cw"` — the point with positive / negative orientation relative to the two defining centres, O1 → O2. `xCC` only: both `xLC` candidates lie on the defining line, so their orientation relative to it is zero and the rule cannot choose (BUG-003). The scene rejects `ccw`/`cw` on anything but `xCC` at load.
+- `"near:<id>"` / `"far:<id>"` — the point closer to / farther from another object, which must be a point. The usual rule for `xLC`.
 - `"above"` / `"below"` / `"left"` / `"right"` — screen-relative, for propositions where Euclid's figure fixes the side.
 
 The declared rule decides on every recompute; the figure is a function of the givens' positions, not of drag history (D-008). The scene also stores the last chosen point, used only as a numerical safeguard: when the configuration is within δ of tangency (the two candidates are less than `δ · max(1, r)` apart, `δ = 1e-3`, r the largest radius involved), or when the rule scores the two candidates within τ of each other, it keeps the candidate nearest the previous value.
@@ -57,6 +57,25 @@ In I.1, `pick: "cw"` keeps C on the negative-orientation side of directed AB, wh
 ```
 
 `kind` ∈ `point | segment | ray | line | circle | angleMark`. `by` names a constructor the scene layer maps to kernel calls. `of` references only earlier ids (ARCHITECTURE invariant 1).
+
+Constructors. `of` is flattened before the call: a point contributes one input, a segment, ray or line contributes its two defining points, a circle contributes centre and radius. The flattened count must match the arity.
+
+| `by` | makes `kind` | arity | flattened inputs | needs `pick` |
+|---|---|---|---|---|
+| `circle` | circle | 2 | centre, a point on the circle | — |
+| `join` | segment | 2 | endpoints | — |
+| `ray` | ray | 2 | origin, a point it passes through | — |
+| `line` | line | 2 | two points on it | — |
+| `angle` | angleMark | 3 | A, vertex V, B | — |
+| `mid` | point | 2 | endpoints | — |
+| `foot` | point | 3 | P, then two points of the line | — |
+| `xLL` | point | 4 | two points of each line | yes |
+| `xLC` | point | 4 | two points of the line, circle centre, radius | yes |
+| `xCC` | point | 4 | centre and radius of each circle | yes |
+
+So `of: ["A", "B", "circA"]` gives `xLC` its four inputs (A, B, centre, radius), and `of: ["circA", "circB"]` gives `xCC` its four.
+
+Values, as returned by the scene: point `{x, y}`; segment, ray, line `{A, B}` (B fixes direction); circle `{O, r}`; angleMark `{A, V, B}`. A value is `null` when the object does not exist in the current configuration (an empty intersection, or any `null` input); everything built on it is then `null` too, and the scene reports itself degenerate. Malformed data (unknown constructor, wrong kind or arity, forward reference, missing or invalid `pick`) is rejected when the scene is created, naming the object; recompute itself never throws.
 
 `mark: "label"` (points only, optional) draws the letter alone: no dot, no drag handle. It is for *naming points*, letters Heath uses to name a figure (the D in "the circle BCD") that Euclid does not construct. Place them where Heath's figure does; in I.1, D and E are the far intersections of line AB with circles A and B. A naming point whose intersection is empty is hidden, like any other derived object.
 

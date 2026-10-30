@@ -1,0 +1,208 @@
+// scene.js — the object graph for one proposition (F-002).
+//
+// Holds the objects declared in a data file (SPEC.md §Scene object
+// schema), recomputes them in declaration order, which is dependency
+// order, and chooses intersection branches by the declared `pick` rule
+// (SPEC.md §Branch selection, D-008).
+//
+// Values by kind:
+//   point                     {x, y}
+//   segment | ray | line      {A, B}          (two points; B fixes direction)
+//   circle                    {O, r}
+//   angleMark                 {A, V, B}
+// A value of null means the object does not exist in the current
+// configuration (an empty intersection, or a null input). Recompute never
+// throws; malformed data throws once, from createScene, with a message
+// naming the object.
+
+import { dist, mid, foot, xLL, xLC, xCC, signedArea } from "./geom.js";
+
+// SPEC §Branch selection: candidates closer than DELTA · max(1, r) are
+// treated as tangent, and rule scores within TAU are treated as tied; in
+// either case the candidate nearest the previous choice is kept.
+export const DELTA = 1e-3;
+export const TAU = 1e-6;
+
+const LINEAR = new Set(["segment", "ray", "line"]);
+
+// Constructor table: `by` → produced kind, and how to compute the value
+// from the flattened inputs (points expand to [P], linear objects to
+// [A, B], circles to [O, r]).
+const CONSTRUCTORS = {
+  circle: { kind: "circle", arity: 2, make: ([O, T]) => ({ O, r: dist(O, T) }) },
+  join:   { kind: "segment", arity: 2, make: ([A, B]) => ({ A, B }) },
+  ray:    { kind: "ray", arity: 2, make: ([A, B]) => ({ A, B }) },
+  line:   { kind: "line", arity: 2, make: ([A, B]) => ({ A, B }) },
+  angle:  { kind: "angleMark", arity: 3, make: ([A, V, B]) => ({ A, V, B }) },
+  mid:    { kind: "point", arity: 2, make: ([A, B]) => mid(A, B) },
+  foot:   { kind: "point", arity: 3, make: ([P, A, B]) => foot(P, A, B) },
+  xLL:    { kind: "point", arity: 4, cands: ([A, B, C, D]) => xLL(A, B, C, D) },
+  xLC:    { kind: "point", arity: 4, cands: ([A, B, O, r]) => xLC(A, B, O, r) },
+  xCC:    { kind: "point", arity: 4, cands: ([O1, r1, O2, r2]) => xCC(O1, r1, O2, r2) },
+};
+
+const PICK_SIMPLE = new Set(["ccw", "cw", "above", "below", "left", "right"]);
+
+function flatten(value, kind) {
+  if (kind === "point") return [value];
+  if (LINEAR.has(kind)) return [value.A, value.B];
+  if (kind === "circle") return [value.O, value.r];
+  return [value];
+}
+
+function validate(defs) {
+  const seen = new Map();
+  for (const d of defs) {
+    const where = `scene object "${d?.id}"`;
+    if (!d || typeof d.id !== "string" || d.id === "") throw new Error(`${where}: missing id`);
+    if (seen.has(d.id)) throw new Error(`${where}: duplicate id`);
+    if (d.free) {
+      if (d.kind !== "point") throw new Error(`${where}: only points can be free`);
+      if (!Number.isFinite(d.at?.x) || !Number.isFinite(d.at?.y)) {
+        throw new Error(`${where}: free point needs a finite "at"`);
+      }
+      seen.set(d.id, d);
+      continue;
+    }
+    const c = CONSTRUCTORS[d.by];
+    if (!c) throw new Error(`${where}: unknown constructor "${d.by}"`);
+    if (d.kind !== c.kind) throw new Error(`${where}: "${d.by}" makes a ${c.kind}, not a ${d.kind}`);
+    if (!Array.isArray(d.of)) throw new Error(`${where}: "of" must be an array`);
+    let arity = 0;
+    for (const ref of d.of) {
+      const src = seen.get(ref);
+      if (!src) throw new Error(`${where}: "${ref}" is not declared earlier (ARCHITECTURE invariant 1)`);
+      arity += src.kind === "point" ? 1 : (LINEAR.has(src.kind) || src.kind === "circle") ? 2 : 1;
+    }
+    if (arity !== c.arity) throw new Error(`${where}: "${d.by}" needs ${c.arity} inputs after expansion, got ${arity}`);
+    if (c.cands) validatePick(d, where, seen);
+    else if (d.pick !== undefined) throw new Error(`${where}: "pick" only applies to intersections`);
+    if (d.mark !== undefined && (d.mark !== "label" || d.kind !== "point")) {
+      throw new Error(`${where}: "mark" must be "label" and only on points`);
+    }
+    seen.set(d.id, d);
+  }
+}
+
+function validatePick(d, where, seen) {
+  const pick = d.pick;
+  if (typeof pick !== "string") throw new Error(`${where}: intersection needs a "pick" rule`);
+  const m = /^(near|far):(.+)$/.exec(pick);
+  if (m) {
+    const ref = seen.get(m[2]);
+    if (!ref) throw new Error(`${where}: pick "${pick}" refers to an undeclared object`);
+    if (ref.kind !== "point") throw new Error(`${where}: pick "${pick}" must refer to a point`);
+    return;
+  }
+  if (!PICK_SIMPLE.has(pick)) throw new Error(`${where}: unknown pick rule "${pick}"`);
+  // On a line–line or line–circle intersection both candidates lie on the
+  // defining line, so their orientation relative to it is zero.
+  if ((pick === "ccw" || pick === "cw") && d.by !== "xCC") {
+    throw new Error(`${where}: pick "${pick}" is only defined for xCC; use near:/far: or a screen rule`);
+  }
+}
+
+// Score each candidate under the rule; the scene keeps the higher score.
+function scorer(pick, inputs, valueOf) {
+  switch (pick) {
+    case "ccw": return (P) => signedArea(inputs[0], inputs[2], P);
+    case "cw": return (P) => -signedArea(inputs[0], inputs[2], P);
+    case "above": return (P) => -P.y;
+    case "below": return (P) => P.y;
+    case "left": return (P) => -P.x;
+    case "right": return (P) => P.x;
+  }
+  const [, how, ref] = /^(near|far):(.+)$/.exec(pick);
+  const R = valueOf(ref);
+  if (!R) return null;
+  return how === "near" ? (P) => -dist(P, R) : (P) => dist(P, R);
+}
+
+/**
+ * Build a scene from a data file's `objects` list.
+ * Throws on malformed data; never throws afterwards.
+ */
+export function createScene(defs) {
+  validate(defs);
+  const order = defs.map((d) => d.id);
+  const byId = new Map(defs.map((d) => [d.id, d]));
+  const values = new Map();
+  const memory = new Map(); // id → last chosen point, for ambiguous picks
+  const free = new Map(defs.filter((d) => d.free).map((d) => [d.id, { x: d.at.x, y: d.at.y }]));
+
+  const valueOf = (id) => values.get(id) ?? null;
+
+  function choose(d, cands, inputs) {
+    if (cands.length === 0) return null;
+    if (cands.length === 1) return cands[0];
+    const [P, Q] = cands;
+    const prev = memory.get(d.id);
+    const nearestPrev = () => (dist(P, prev) <= dist(Q, prev) ? P : Q);
+
+    const radii = d.by === "xLC" ? [inputs[3]] : d.by === "xCC" ? [inputs[1], inputs[3]] : [];
+    const scale = Math.max(1, ...radii);
+    if (prev && dist(P, Q) < DELTA * scale) return nearestPrev();
+
+    const score = scorer(d.pick, inputs, valueOf);
+    if (!score) return null; // near:/far: reference does not exist
+    const sP = score(P), sQ = score(Q);
+    if (Math.abs(sP - sQ) <= TAU * Math.max(1, Math.abs(sP), Math.abs(sQ))) {
+      return prev ? nearestPrev() : P;
+    }
+    return sP > sQ ? P : Q;
+  }
+
+  function compute(d) {
+    if (d.free) return free.get(d.id);
+    const parts = [];
+    for (const ref of d.of) {
+      const v = valueOf(ref);
+      if (v === null) return null;
+      parts.push(...flatten(v, byId.get(ref).kind));
+    }
+    const c = CONSTRUCTORS[d.by];
+    if (c.make) {
+      const v = c.make(parts);
+      if (d.kind === "point" && !(Number.isFinite(v.x) && Number.isFinite(v.y))) return null;
+      return v;
+    }
+    const chosen = choose(d, c.cands(parts), parts);
+    if (chosen) memory.set(d.id, chosen);
+    return chosen;
+  }
+
+  function recompute() {
+    for (const id of order) values.set(id, compute(byId.get(id)));
+  }
+
+  recompute();
+
+  return {
+    /** Object ids in declaration (dependency) order. */
+    ids: order.slice(),
+    /** The data-file definition of an object. */
+    def: (id) => byId.get(id),
+    /** Current value of an object, or null if it does not exist. */
+    value: valueOf,
+    /** True if the object is a draggable given. */
+    isFree: (id) => free.has(id),
+    /**
+     * Move a free point and recompute. Returns false (and changes nothing)
+     * for an unknown or non-free id or a non-finite position.
+     */
+    move(id, P) {
+      if (!free.has(id) || !Number.isFinite(P?.x) || !Number.isFinite(P?.y)) return false;
+      free.set(id, { x: P.x, y: P.y });
+      recompute();
+      return true;
+    },
+    /** Restore every free point to its declared position. */
+    reset() {
+      for (const d of defs) if (d.free) free.set(d.id, { x: d.at.x, y: d.at.y });
+      memory.clear();
+      recompute();
+    },
+    /** True if any object fails to exist in the current configuration. */
+    isDegenerate: () => order.some((id) => values.get(id) === null),
+  };
+}

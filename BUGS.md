@@ -13,6 +13,15 @@ _None._
 
 ## Fixed
 
+### BUG-003: SPEC defines ccw/cw for line–circle intersections, where it cannot choose
+**Status:** fixed
+**Found:** 2026-10-30 (writing `docs/js/scene.js` for F-002)
+**Location:** SPEC.md §Branch selection (first bullet)
+**Severity:** low
+**Description.** SPEC says `"ccw"` / `"cw"` pick by orientation "relative to the two defining centres (for `xCC`) or the two line points (for `xLC`)". Both `xLC` candidates lie on the line through those two points, so their orientation relative to it is zero for both; the rule can never distinguish them. The same holds for `xLL`, which has only one candidate anyway.
+**Reproduction.** Any `xLC` object with `pick: "ccw"`: `signedArea(A, B, P) = 0` for both candidates. `scene.js` currently rejects this combination at load with "pick \"ccw\" is only defined for xCC".
+**Notes.** Proposed fix: restrict `"ccw"`/`"cw"` to `xCC` in SPEC; for `xLC` use `near:`/`far:` (as I.1's D and E do) or, if needed later, an `"first"`/`"second"` rule meaning order along directed AB, which is orientation-free and already the kernel's canonical order. Related: D-008, AV-003. Fixed 2026-10-30: SPEC §Branch selection restricts `ccw`/`cw` to `xCC` and names `near:`/`far:` as the usual `xLC` rule; the `first`/`second` rule is not added until a proposition needs it.
+
 ### BUG-002: I.1's C is specified on the wrong side of AB
 **Status:** fixed
 **Found:** 2026-10-30 (writing `tools/test_geom.mjs` for F-001)

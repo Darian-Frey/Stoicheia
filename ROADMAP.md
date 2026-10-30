@@ -8,7 +8,7 @@ Phases follow the natural arcs of Book I. Phases are append-only; mark Complete 
 **Features delivered:** F-001, F-002, F-003, F-004, F-005, F-006, F-015; F-007 partial (Heath text and citations rendered; links target `defs.html` anchors that resolve in Phase 2)
 **Deliverables:**
 - [x] `docs/js/geom.js` with unit tests in `tools/test_geom.mjs` (Node)
-- [ ] `docs/js/scene.js` dependency recompute with stable intersection branches
+- [x] `docs/js/scene.js` dependency recompute with stable intersection branches
 - [ ] `docs/js/render.js`, `stepper.js`, `readout.js`
 - [ ] `docs/css/instrument.css` tokens
 - [ ] `docs/data/props/01.js`

@@ -15,6 +15,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - Directory skeleton (`docs/`, `tools/`) and Instrument reference mock-up in `design/instrument/`.
 - IMP-002–IMP-006 logged.
 - `docs/js/geom.js`: kernel per SPEC §Kernel (F-001); `tools/test_geom.mjs`, 19 tests on `node:test`.
+- `docs/js/scene.js`: object graph, declaration-order recompute, `pick` rules with δ/τ branch memory, load-time data validation (F-002 partial; drag input arrives with `render.js`). `tools/test_scene.mjs`, 12 tests including AV-001 and AV-003 drag sweeps.
+- SPEC §Scene object schema: constructor table (`circle`, `join`, `ray`, `line`, `angle`, `mid`, `foot`, `xLL`, `xLC`, `xCC`), input flattening, value shapes and `null` semantics.
 ### Changed
 - F-001 Complete: kernel and tests meet the acceptance criteria.
 - F-001 acceptance reworded: kernel is point-and-scalar only (IMP-004 applied).
@@ -24,5 +26,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 ### Removed
 - `proof` field from the proposition schema (D-010).
 ### Fixed
+- `ccw`/`cw` restricted to `xCC` in SPEC §Branch selection; they cannot choose between line–circle candidates (BUG-003).
 - I.1's C is `pick: "cw"` (above AB on screen), not `"ccw"`: SPEC, D-008 and AV-003 corrected (BUG-002, found by `test_geom.mjs`).
 - SPEC example `title` for I.1 replaced with Heath's wording (BUG-001; AV-004).
