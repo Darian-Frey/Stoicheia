@@ -10,7 +10,7 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 - `design/instrument/` — reference mock-up of I.1: `Instrument.dc.html` (exact design values in inline styles) and `instrument-I1.pdf`. Layout reference only; its step text is a paraphrase, not Heath (D-004). `support.js` and `vendor/` are the mock-up's viewer runtime, not part of the site.
 - `docs/js/geom.js` — written 2026-10-30, all SPEC §Kernel functions; `tools/test_geom.mjs` passes (19 tests).
 - `docs/js/scene.js` — written 2026-10-30; `tools/test_scene.mjs` passes (12 tests).
-- `docs/data/props/01.js` — not started. Schema in SPEC.md §Proposition data.
+- `render.js`, `stepper.js`, `readout.js`, `prop.js`, `instrument.css`, `prop.html`, `data/props/01.js` — written 2026-10-30; I.1 renders and drags end to end in headless Chrome (all acceptance checks pass). Author checked visually 2026-10-30; F-003–F-006 and F-015 Complete. F-002 awaits a real touch-device drag test; F-007 partial until Phase 2.
 - Documentation — complete first pass 2026-10-29 (README, FEATURES, ROADMAP, ARCHITECTURE, DECISIONS D-001–D-010 (D-008–D-010 added 2026-10-30), SPEC, ATTACK_VECTORS AV-001–AV-008, BUGS, IMPROVEMENTS, CHANGELOG, LICENSE).
 
 ## Active task

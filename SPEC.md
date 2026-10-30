@@ -5,6 +5,7 @@ Authoritative technical reference for Stoicheia. FEATURES.md says what; this say
 ## Coordinates
 
 - The figure is an SVG with `viewBox="0 0 600 470"`. Internal units are SVG user units; y increases downward (SVG convention). The kernel does not care; the data files place givens in this space.
+- Dragging a free point to within 8 units of another free point snaps it exactly onto that point, so coincident givens (AV-001) are reachable by hand rather than only by floating-point accident.
 - Angles are measured in radians internally and shown in degrees to one decimal in the readout.
 - Lengths are *displayed* in units of the proposition's reference length: the data file's `unit` (a segment id), defaulting to the first entry of `measure`. In I.1, |AB| always reads 1.000. Claims are evaluated in SVG units; the residual is relative, so it is unaffected by the display scale. If the reference length is 0 the readout shows DEGENERATE.
 - "Orientation" of three points P, Q, R is the sign of the cross product `(Q−P) × (R−P)`; positive is counter-clockwise *in screen space* (clockwise on paper). Used for branch selection and signed area.
@@ -56,7 +57,7 @@ In I.1, `pick: "cw"` keeps C on the negative-orientation side of directed AB, wh
 { id: "D", kind: "point", by: "xLC", of: ["A", "B", "circA"], pick: "far:B", mark: "label" }
 ```
 
-`kind` ∈ `point | segment | ray | line | circle | angleMark`. `by` names a constructor the scene layer maps to kernel calls. `of` references only earlier ids (ARCHITECTURE invariant 1).
+`kind` ∈ `point | segment | ray | line | circle | angleMark | polygon`. `by` names a constructor the scene layer maps to kernel calls. `of` references only earlier ids (ARCHITECTURE invariant 1).
 
 Constructors. `of` is flattened before the call: a point contributes one input, a segment, ray or line contributes its two defining points, a circle contributes centre and radius. The flattened count must match the arity.
 
@@ -72,10 +73,13 @@ Constructors. `of` is flattened before the call: a point contributes one input, 
 | `xLL` | point | 4 | two points of each line | yes |
 | `xLC` | point | 4 | two points of the line, circle centre, radius | yes |
 | `xCC` | point | 4 | centre and radius of each circle | yes |
+| `polygon` | polygon | ≥ 3 | vertices in order (points only, not flattened) | — |
 
 So `of: ["A", "B", "circA"]` gives `xLC` its four inputs (A, B, centre, radius), and `of: ["circA", "circB"]` gives `xCC` its four.
 
-Values, as returned by the scene: point `{x, y}`; segment, ray, line `{A, B}` (B fixes direction); circle `{O, r}`; angleMark `{A, V, B}`. A value is `null` when the object does not exist in the current configuration (an empty intersection, or any `null` input); everything built on it is then `null` too, and the scene reports itself degenerate. Malformed data (unknown constructor, wrong kind or arity, forward reference, missing or invalid `pick`) is rejected when the scene is created, naming the object; recompute itself never throws.
+Values, as returned by the scene: point `{x, y}`; segment, ray, line `{A, B}` (B fixes direction); circle `{O, r}`; angleMark `{A, V, B}`; polygon `{P: [points]}`. A value is `null` when the object does not exist in the current configuration (an empty intersection, or any `null` input); everything built on it is then `null` too, and the scene reports itself degenerate. Malformed data (unknown constructor, wrong kind or arity, forward reference, missing or invalid `pick`) is rejected when the scene is created, naming the object; recompute itself never throws.
+
+`role` (optional) sets the figure colour: `"given"` (`--ink`), `"construction"` (`--teal`, dashed for curves and lines) or `"result"` (`--amber`). Default: free points and joins of two free points are given; circles, rays and lines are construction; everything else is result. Objects listed in no step's `show` are construction helpers and are never drawn.
 
 `mark: "label"` (points only, optional) draws the letter alone: no dot, no drag handle. It is for *naming points*, letters Heath uses to name a figure (the D in "the circle BCD") that Euclid does not construct. Place them where Heath's figure does; in I.1, D and E are the far intersections of line AB with circles A and B. A naming point whose intersection is empty is hidden, like any other derived object.
 
@@ -88,10 +92,11 @@ export default {
   title: "On a given finite straight line to construct an equilateral triangle.",
   short: "Equilateral triangle",
   given: "Let AB be the given finite straight line.",
+  brief: { given: "finite straight line AB", required: "equilateral triangle on AB" },  // header summary; not Heath's text
   objects: [ /* scene object schema, dependency order */ ],
   steps: [
-    { title: "The given line", text: "…", cite: "Given", show: ["A","B","AB"] },
-    { title: "Circle with centre A", text: "…", cite: "Post. 3", show: ["circA"] },
+    { title: "The given line", short: "Given", text: "…", cite: "Given", note: "…", show: ["A","B","AB"] },
+    { title: "Circle with centre A", short: "Circle A", text: "…", cite: "Post. 3", show: ["circA", "D"] },
     …
     { title: "Q.E.F.", text: "…", cite: "Def. 15, C.N. 1", show: [] }
   ],
@@ -105,9 +110,9 @@ export default {
 };
 ```
 
-Each step's `text` is Heath's wording for that stage of the construction or proof, transcribed, with citations inserted inline in brackets (`[Post. 3]`) and nothing else changed (D-004). Read in order, the step texts are the complete proof; there is no separate proof field or panel (D-010). `cite` is the card's footer line and lists exactly the citations that appear inline in `text`. Commentary that is not Heath's (e.g. "A and B may be dragged") does not go in `text`; if wanted it goes in an optional `note` field, rendered visibly apart from the proof text.
+Each step's `text` is Heath's wording for that stage of the construction or proof, transcribed, with citations inserted inline in brackets (`[Post. 3]`) and nothing else changed (D-004). Read in order, the step texts are the complete proof; there is no separate proof field or panel (D-010). `text` may contain `\n` to separate paragraphs, following Heath's own breaks. `cite` is the card's footer line and lists exactly the citations that appear inline in `text`. `short` is the step's name in the transport bar (GIVEN · CIRCLE A · …). `brief` is a one-line header summary (GIVEN / REQUIRED) and, like `note`, is the site's wording, not Heath's. Commentary that is not Heath's (e.g. "A and B may be dragged") does not go in `text`; if wanted it goes in an optional `note` field, rendered visibly apart from the proof text.
 
-Claim forms: `eq` (all equal), `gt: [a, b]`, `parallel: [seg, seg]`, `on: [point, line]`, `perp: [seg, seg]`, `areaEq: [poly, poly]`, `angleEq: [[A,V,B],[C,W,D]]`, `sum: {parts:[…], whole:…}`.
+Claim forms: `eq` (all equal; residual is the worst pair), `gt: [a, b]`, `parallel: [seg, seg]`, `on: [point, line]`, `perp: [seg, seg]`, `areaEq: [poly, poly]`, `angleEq: [[A,V,B],[C,W,D]]`, `sum: {parts:[…], whole:…}`.
 
 Citation strings use exactly: `Def. N`, `Post. N`, `C.N. N`, `I.N`, both inline in step text and in `cite` and `uses`. The linter rejects anything else, with one exception: `cite: "Given"` marks a step that states the hypothesis and relies on nothing. `Given` must stand alone (never in a list), renders as plain unlinked text, and is excluded from the `uses` check.
 

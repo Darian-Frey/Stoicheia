@@ -10,6 +10,7 @@
 //   segment | ray | line      {A, B}          (two points; B fixes direction)
 //   circle                    {O, r}
 //   angleMark                 {A, V, B}
+//   polygon                   {P: [points]}
 // A value of null means the object does not exist in the current
 // configuration (an empty intersection, or a null input). Recompute never
 // throws; malformed data throws once, from createScene, with a message
@@ -34,6 +35,8 @@ const CONSTRUCTORS = {
   ray:    { kind: "ray", arity: 2, make: ([A, B]) => ({ A, B }) },
   line:   { kind: "line", arity: 2, make: ([A, B]) => ({ A, B }) },
   angle:  { kind: "angleMark", arity: 3, make: ([A, V, B]) => ({ A, V, B }) },
+  // Polygon: three or more points, in order; `of` may list points only.
+  polygon: { kind: "polygon", arity: "points", make: (P) => ({ P }) },
   mid:    { kind: "point", arity: 2, make: ([A, B]) => mid(A, B) },
   foot:   { kind: "point", arity: 3, make: ([P, A, B]) => foot(P, A, B) },
   xLL:    { kind: "point", arity: 4, cands: ([A, B, C, D]) => xLL(A, B, C, D) },
@@ -68,6 +71,17 @@ function validate(defs) {
     if (!c) throw new Error(`${where}: unknown constructor "${d.by}"`);
     if (d.kind !== c.kind) throw new Error(`${where}: "${d.by}" makes a ${c.kind}, not a ${d.kind}`);
     if (!Array.isArray(d.of)) throw new Error(`${where}: "of" must be an array`);
+    if (c.arity === "points") {
+      for (const ref of d.of) {
+        const src = seen.get(ref);
+        if (!src) throw new Error(`${where}: "${ref}" is not declared earlier (ARCHITECTURE invariant 1)`);
+        if (src.kind !== "point") throw new Error(`${where}: "${d.by}" takes points only; "${ref}" is a ${src.kind}`);
+      }
+      if (d.of.length < 3) throw new Error(`${where}: "${d.by}" needs at least 3 points`);
+      if (d.pick !== undefined) throw new Error(`${where}: "pick" only applies to intersections`);
+      seen.set(d.id, d);
+      continue;
+    }
     let arity = 0;
     for (const ref of d.of) {
       const src = seen.get(ref);

@@ -39,7 +39,7 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 - Each proposition declares one or more claims (equal lengths, equal angles, parallel, point-on-line, etc.).
 - The readout evaluates every claim on each recompute and shows pass/fail with the residual.
 - Tolerance is relative, per SPEC.md §Tolerance; false fails do not occur at ordinary drag positions.
-**Status:** Not started
+**Status:** Complete (2026-10-30)
 
 ### Proposition pages
 
@@ -49,7 +49,7 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 - `prop.html?p=1` renders the statement, the construction, the proof, the readout and the stepper in the Instrument theme.
 - Dragging A or B moves C and both circles correctly.
 - Readout shows |AB|, |AC|, |BC| and "EQUILATERAL" passes.
-**Status:** Not started
+**Status:** Complete (2026-10-30)
 **Notes:** This is the end-to-end pipeline proof. Everything after it is repetition.
 
 #### F-005 Step-through construction
@@ -60,14 +60,14 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 - The final step is the Q.E.F. / Q.E.D., carrying Heath's concluding text.
 - Heath's proof is read through the step cards; there is no separate proof panel (D-010).
 - Dragging works at every step, not only the last.
-**Status:** Not started
+**Status:** Complete (2026-10-30)
 
 #### F-006 Readout panel
 **Priority:** Must
 **Acceptance:**
 - Lengths, angles and claim results update live during drag.
 - Values are formatted to three decimals with tabular numerals.
-**Status:** Not started
+**Status:** Complete (2026-10-30)
 
 #### F-007 Proof text with citations
 **Priority:** Must
@@ -132,7 +132,7 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 **Acceptance:**
 - All colours, type and spacing are CSS custom properties in `instrument.css` (SPEC.md §Theme tokens).
 - No inline colours in page markup.
-**Status:** Not started
+**Status:** Complete (2026-10-30)
 **Notes:** Mock-up chosen 2026-10-29 (D-002).
 
 ## Candidate features (uncommitted)

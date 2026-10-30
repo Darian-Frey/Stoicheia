@@ -9,10 +9,10 @@ Phases follow the natural arcs of Book I. Phases are append-only; mark Complete 
 **Deliverables:**
 - [x] `docs/js/geom.js` with unit tests in `tools/test_geom.mjs` (Node)
 - [x] `docs/js/scene.js` dependency recompute with stable intersection branches
-- [ ] `docs/js/render.js`, `stepper.js`, `readout.js`
-- [ ] `docs/css/instrument.css` tokens
-- [ ] `docs/data/props/01.js`
-- [ ] `docs/prop.html` rendering I.1 end to end
+- [x] `docs/js/render.js`, `stepper.js`, `readout.js`
+- [x] `docs/css/instrument.css` tokens
+- [x] `docs/data/props/01.js`
+- [x] `docs/prop.html` rendering I.1 end to end
 **Acceptance:** I.1 drags correctly at every step; readout passes; page matches the Instrument mock-up.
 
 ## Phase 2 — Constructions and congruence (I.2–I.8)

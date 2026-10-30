@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stoicheia</title>
+<link rel="preload" href="fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/instrument.css">
+<script type="module" src="js/prop.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <span class="brand-name">STOICHEIA</span>
+    <span class="badge" id="prop-badge">BK I</span>
+  </div>
+  <nav class="site-nav" aria-label="Site">
+    <a href="index.html">Index</a>
+    <a href="defs.html">Defs</a>
+    <a href="defs.html#post-1">Posts</a>
+    <a href="graph.html">Graph</a>
+  </nav>
+</header>
+
+<div class="prop-head">
+  <h1 class="prop-title" id="prop-title">&nbsp;</h1>
+  <div class="prop-brief" id="prop-brief"></div>
+</div>
+
+<main class="prop-main" id="prop-main">
+  <div class="figure">
+    <svg id="figure-svg"></svg>
+  </div>
+
+  <aside class="side">
+    <section class="panel" aria-label="Readout">
+      <div class="panel-label">READOUT</div>
+      <div class="readout-grid" id="readout-grid"></div>
+      <div class="readout-status" id="readout-status" aria-live="polite"></div>
+    </section>
+
+    <section class="panel step-card" aria-live="polite">
+      <div class="panel-label" id="step-label"></div>
+      <h2 class="step-title" id="step-title"></h2>
+      <div class="step-text" id="step-text"></div>
+      <div class="step-note" id="step-note"></div>
+      <div class="step-cite" id="step-cite"></div>
+    </section>
+  </aside>
+</main>
+
+<footer class="transport">
+  <div class="transport-controls" id="transport-controls">
+    <button type="button" class="t-btn" id="step-prev" aria-label="Previous step">◀</button>
+    <button type="button" class="t-btn is-primary" id="step-next" aria-label="Next step">▶</button>
+    <div class="pips" id="step-pips"></div>
+    <div class="step-names" id="step-names"></div>
+  </div>
+  <div class="prop-links" id="prop-links"></div>
+</footer>
+
+</body>
+</html>

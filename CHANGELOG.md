@@ -17,7 +17,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - `docs/js/geom.js`: kernel per SPEC §Kernel (F-001); `tools/test_geom.mjs`, 19 tests on `node:test`.
 - `docs/js/scene.js`: object graph, declaration-order recompute, `pick` rules with δ/τ branch memory, load-time data validation (F-002 partial; drag input arrives with `render.js`). `tools/test_scene.mjs`, 12 tests including AV-001 and AV-003 drag sweeps.
 - SPEC §Scene object schema: constructor table (`circle`, `join`, `ray`, `line`, `angle`, `mid`, `foot`, `xLL`, `xLC`, `xCC`), input flattening, value shapes and `null` semantics.
+- Proposition page pipeline: `render.js` (SVG figure, pointer dragging with 8-unit snap), `stepper.js` (step card, citation links, transport), `readout.js` (lengths in reference units, `eq` claims, DEGENERATE state), `prop.js` (bootstrap), `instrument.css` (theme from the mock-up, vendored fonts), `prop.html`, and `data/props/01.js` (Heath's I.1, checked against the scan).
+- `polygon` constructor in `scene.js`; SPEC gains `polygon`, `role`, step `short`, `brief`, paragraph breaks in step text, and drag snapping.
 ### Changed
+- F-003, F-004, F-005, F-006, F-015 Complete after the author's visual check of I.1. F-002 pending a touch-device test.
 - F-001 Complete: kernel and tests meet the acceptance criteria.
 - F-001 acceptance reworded: kernel is point-and-scalar only (IMP-004 applied).
 - Tool scripts standardised on `.mjs` (`tools/test_geom.mjs`, `tools/lint_props.mjs`); Node ≥ 22.7 noted in CLAUDE.md (IMP-002 applied).

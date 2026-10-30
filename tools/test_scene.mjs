@@ -181,6 +181,15 @@ test("near-tangent candidates keep the previous choice", () => {
   assert.ok(s.value("P").y > 0, "within δ of tangency, keep the previous side");
 });
 
+test("polygon joins points in order and follows them", () => {
+  const s = createScene([...I1(), { id: "ABC", kind: "polygon", by: "polygon", of: ["A", "B", "C"] }]);
+  const { P } = s.value("ABC");
+  assert.equal(P.length, 3);
+  nearPt(P[2], p(300, 290 - 80 * S3), "C vertex");
+  s.move("A", p(380, 290));
+  assert.equal(s.value("ABC"), null, "a polygon on a missing vertex is null");
+});
+
 test("createScene rejects malformed data", () => {
   const A = { id: "A", kind: "point", free: true, at: { x: 0, y: 0 } };
   const B = { id: "B", kind: "point", free: true, at: { x: 1, y: 0 } };
@@ -198,6 +207,9 @@ test("createScene rejects malformed data", () => {
       { id: "P", kind: "point", by: "xLC", of: ["A", "B", "c"], pick: "near:Z" }], /undeclared/],
     [[A, B, { id: "M", kind: "point", by: "mid", of: ["A", "B"], pick: "cw" }], /only applies to intersections/],
     [[{ id: "A", kind: "point", free: true }], /finite "at"/],
+    [[A, B, { id: "P", kind: "polygon", by: "polygon", of: ["A", "B"] }], /at least 3/],
+    [[A, B, { id: "AB", kind: "segment", by: "join", of: ["A", "B"] },
+      { id: "P", kind: "polygon", by: "polygon", of: ["A", "B", "AB"] }], /points only/],
   ];
   for (const [defs, re] of bad) assert.throws(() => createScene(defs), re);
 });
