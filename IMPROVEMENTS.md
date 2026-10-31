@@ -23,8 +23,10 @@ Effort vocabulary: trivial | small | medium | large.
 **Trade-offs.** OCR cleaning is tedious and itself error-prone, so the corpus needs its own one-off manual check; until then it could give false confidence. Adds a 48-file corpus to the repo that is not served.
 **Notes.** Natural Phase 5 task; would move AV-004 from manual to automated detection.
 
+## Applied
+
 ### IMP-007: Keep the headless-browser page checks in `tools/`
-**Status:** suggested
+**Status:** applied
 **Found:** 2026-10-31 (building the index; the Phase 1 browser check scripts had been lost with the session scratchpad)
 **Location:** `tools/` (new `check_pages.mjs`), CLAUDE.md §Build & test
 **Effort:** small
@@ -32,8 +34,7 @@ Effort vocabulary: trivial | small | medium | large.
 **Proposal.** Commit one `tools/check_pages.mjs` (Node built-ins only: `child_process`, `fetch`, `WebSocket`) that starts a local server and headless Chrome, runs the I.1 and index checks, and exits non-zero on failure. Add it to CLAUDE.md §Build & test, and run it before any phase is marked Complete.
 **Trade-offs.** Needs Chrome installed; not a dependency in the D-001 sense (nothing is installed or vendored, and `docs/` is untouched), but it is the first tool that relies on a program outside Node and Python. Pixel-exact visual checks stay manual.
 **Notes.** Related: F-002, BUG-004, AV-001, AV-003, AV-006.
-
-## Applied
+**Resolution.** 2026-10-31: `tools/check_pages.mjs` added. Built-in static server (no Python needed), Chrome found on PATH or via `CHROME`, temporary profile removed afterwards. Checks the index against `arcs.js`, then for every built proposition: title, pips, footers against `cite.js`, claims at the final step, mouse drag of each given, dragging at every step, touch drag without scroll, 390 px width; I.1-specific drags in `SPECIFIC`; routing and console errors. 26 checks pass in ~10 s; a deliberate revert of the BUG-004 fix makes it fail with exit 1. ARCHITECTURE §Testing and CLAUDE.md §Build & test updated.
 
 ### IMP-006: Derive `cite` and `uses` from inline citations
 **Status:** applied

@@ -21,7 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - `polygon` constructor in `scene.js`; SPEC gains `polygon`, `role`, step `short`, `brief`, paragraph breaks in step text, and drag snapping.
 - README links to the live I.1 page on GitHub Pages.
 - Index page (F-010): `index.html`, `js/index.js`, `data/arcs.js`; 48 cards grouped by arc, built propositions link to their page with a miniature drawn by the shared scene and renderer, unbuilt ones are dimmed placeholders. `render.js` gains a non-interactive mode for miniatures.
-- IMP-007 logged: keep the headless-browser page checks in `tools/`.
+- `tools/check_pages.mjs`: headless-Chrome checks of the index and every built proposition, Node built-ins only (IMP-007 applied).
 ### Changed
 - Citations are written once, inline in Heath's text: step footers and `uses` are derived by new `js/cite.js`; `given: true` replaces `cite: "Given"`; `tools/test_cite.mjs` added (IMP-006 applied).
 - F-010 Complete after the author's review of the index.
