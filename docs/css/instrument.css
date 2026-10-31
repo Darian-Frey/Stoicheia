@@ -412,6 +412,58 @@ a.card:hover .card-title { color: var(--ink); }
   color: var(--ink-2);
 }
 
+/* ── Foundations (defs.html) ─────────────────────────────────────── */
+
+.defs-main {
+  padding: 22px 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 920px;
+}
+
+.found-section { gap: 10px; padding: 18px 20px; }
+
+.found-head {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--ink);
+}
+
+.found-intro { margin: 0; font-size: 13px; color: var(--ink-2); }
+
+.found-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+
+.found-entry {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 12px;
+  border-left: 2px solid transparent;
+  border-top: 1px solid var(--rule);
+  scroll-margin-top: 16px;
+}
+
+.found-entry:first-child { border-top: 0; }
+.found-entry.is-target { border-left-color: var(--amber); background: var(--well); }
+
+.found-num {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--amber);
+  padding-top: 2px;
+  white-space: nowrap;
+}
+
+.found-body { display: flex; flex-direction: column; gap: 4px; }
+.found-text { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+.found-text .term { color: var(--ink); font-weight: 600; }
+.found-marker { color: var(--ink-3); }
+.found-cited { font-size: 11px; letter-spacing: 0.06em; color: var(--ink-3); }
+.found-note { margin: 4px 0 0; font-size: 12px; line-height: 1.5; color: var(--ink-3); }
+
 /* ── Notice (missing proposition) ─────────────────────────────────── */
 
 .notice { padding: 22px 32px; font-size: 13px; color: var(--ink-3); }

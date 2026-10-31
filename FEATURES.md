@@ -74,7 +74,7 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 **Acceptance:**
 - Proof text follows Heath; every inference cites its justification in `[Post. N]`, `[Def. N]`, `[C.N. N]` or `[I.N]` form.
 - Citations are links to `defs.html#…` or `prop.html?p=N`.
-**Status:** Not started
+**Status:** Complete (2026-10-31)
 
 #### F-008 All 48 propositions
 **Priority:** Must
@@ -104,7 +104,7 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 **Priority:** Must
 **Acceptance:**
 - Definitions 1–23, Postulates 1–5, Common Notions 1–5, each with a stable anchor.
-**Status:** Not started
+**Status:** Complete (2026-10-31)
 
 #### F-012 Dependency graph
 **Priority:** Should

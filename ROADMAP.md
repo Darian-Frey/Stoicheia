@@ -22,7 +22,7 @@ Phases follow the natural arcs of Book I. Phases are append-only; mark Complete 
 **Deliverables:**
 - [ ] Data files 02–08
 - [x] `docs/index.html` with arc grouping and miniatures
-- [ ] `docs/defs.html`
+- [x] `docs/defs.html`
 - [ ] Prev/next navigation
 - [x] README live link points at the site root, and the "Only I.1 is built" note is removed
 **Acceptance:** Props 1–8 pass; index links to each; defs anchors resolve from proof citations.

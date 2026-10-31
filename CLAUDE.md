@@ -10,14 +10,15 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 - `docs/js/geom.js` — written 2026-10-30, all SPEC §Kernel functions; `tools/test_geom.mjs` passes (19 tests).
 - `docs/js/scene.js` — written 2026-10-30; `tools/test_scene.mjs` passes (13 tests).
 - `index.html`, `js/index.js`, `data/arcs.js` — written 2026-10-31; 48 cards by arc, I.1 live with a miniature, 47 placeholders. Add each new proposition to `built` in `arcs.js`.
-- `render.js`, `stepper.js`, `readout.js`, `prop.js`, `instrument.css`, `prop.html`, `data/props/01.js` — written 2026-10-30; I.1 renders and drags end to end in headless Chrome (all acceptance checks pass). Author checked visually and on a phone 2026-10-30; F-002–F-006 and F-015 Complete; F-007 partial until Phase 2.
+- `defs.html`, `js/defs.js`, `data/foundations.js` — written 2026-10-31; Heath's Defs 1–23, Posts 1–5, C.N. 1–5 from pp. 153–155, checked against scan leaves 173–175 (author's check pending). Every citation in built propositions resolves (`check_pages.mjs`).
+- `render.js`, `stepper.js`, `readout.js`, `prop.js`, `instrument.css`, `prop.html`, `data/props/01.js` — written 2026-10-30; I.1 renders and drags end to end in headless Chrome (all acceptance checks pass). Author checked visually and on a phone 2026-10-30; F-002–F-006 and F-015 Complete.
 - Documentation — complete first pass 2026-10-29 (README, FEATURES, ROADMAP, ARCHITECTURE, DECISIONS D-001–D-010 (D-008–D-010 added 2026-10-30), SPEC, ATTACK_VECTORS AV-001–AV-008, BUGS, IMPROVEMENTS, CHANGELOG, LICENSE).
 
 ## Active task
 
-**Phase 1 — Foundation: Complete (2026-10-30).** I.1 is live at https://darian-frey.github.io/Stoicheia/prop.html?p=1 and passed its acceptance checks, including the author's visual check and a phone touch test (BUG-004 fixed). F-001–F-006 and F-015 Complete; F-007 partial until `defs.html` exists.
+**Phase 1 — Foundation: Complete (2026-10-30).** I.1 is live at https://darian-frey.github.io/Stoicheia/prop.html?p=1 and passed its acceptance checks, including the author's visual check and a phone touch test (BUG-004 fixed). F-001–F-006 and F-015 Complete; F-007 completed in Phase 2 with `defs.html`.
 
-**Phase 2 — Constructions and congruence (I.2–I.8)** (ROADMAP). Started 2026-10-31 with the index (F-010): `index.html`, `js/index.js`, `data/arcs.js`. Next: I.2–I.8 data files, `defs.html` (F-011, completes F-007), prev/next (F-013). Settle IMP-006 before writing `02.js`. Each data file's Heath text is transcribed from the scan (Internet Archive `thirteenbookseu02heibgoog`) and checked line by line before it is marked done (AV-004).
+**Phase 2 — Constructions and congruence (I.2–I.8)** (ROADMAP). Started 2026-10-31 with the index (F-010): `index.html`, `js/index.js`, `data/arcs.js`. `defs.html` (F-011) done 2026-10-31. Next: I.2–I.8 data files, prev/next (F-013). Each data file's Heath text is transcribed from the scan (Internet Archive `thirteenbookseu02heibgoog`) and checked line by line before it is marked done (AV-004).
 
 ## Invariants
 

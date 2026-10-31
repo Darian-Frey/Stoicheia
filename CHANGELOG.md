@@ -22,7 +22,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - README links to the live I.1 page on GitHub Pages.
 - Index page (F-010): `index.html`, `js/index.js`, `data/arcs.js`; 48 cards grouped by arc, built propositions link to their page with a miniature drawn by the shared scene and renderer, unbuilt ones are dimmed placeholders. `render.js` gains a non-interactive mode for miniatures.
 - `tools/check_pages.mjs`: headless-Chrome checks of the index and every built proposition, Node built-ins only (IMP-007 applied).
+- Definitions page (F-011): `defs.html`, `js/defs.js`, `data/foundations.js` with Heath's Definitions 1–23, Postulates 1–5 and Common Notions 1–5 (pp. 153–155, checked against the scan); anchored, highlighted entries and "Cited in" links derived from the propositions. Citation links on proposition pages now resolve (F-007).
+- `check_pages.mjs`: foundations checks (33 anchored entries, bold terms, every citation resolves, "Cited in", citation click lands highlighted, 390 px).
 ### Changed
+- F-007 and F-011 Complete after the author's review of the definitions page.
 - D-005: `TESTING.md` exemption revisited after the browser check was added, and kept; new revisit trigger recorded.
 - Citations are written once, inline in Heath's text: step footers and `uses` are derived by new `js/cite.js`; `given: true` replaces `cite: "Given"`; `tools/test_cite.mjs` added (IMP-006 applied).
 - F-010 Complete after the author's review of the index.

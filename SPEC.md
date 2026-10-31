@@ -154,7 +154,9 @@ Figure styling: givens and given lines in `--ink`; construction circles `--teal`
 
 - `index.html` — index.
 - `prop.html?p=NN` — proposition NN (1–48). Out-of-range or missing → index.
-- `defs.html#def-15`, `#post-3`, `#cn-1` — foundations anchors.
+- `defs.html#def-15`, `#post-3`, `#cn-1` — foundations anchors, one per Definition (1–23), Postulate (1–5) and Common Notion (1–5). The anchored entry is highlighted. Each entry lists the built propositions that cite it ("Cited in I.1"), derived with `usesOf`.
+
+`data/foundations.js` exports `definitions`, `postulates` and `commonNotions` (each `{n, text}`, in order), `postulatesIntro`, and `source`. Text is Heath's, transcribed from the scan (AV-004); terms Heath sets in bold are marked `**…**` and rendered bold. A common notion may carry `heiberg`, the bracketed number Heath prints beside it.
 - `graph.html` — dependency graph.
 
 Header nav (per the mock-up): Index → `index.html`, Defs → `defs.html`, Posts → `defs.html#post-1`, Graph → `graph.html` (inert until Phase 5).

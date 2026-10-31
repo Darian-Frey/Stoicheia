@@ -17,7 +17,7 @@ import { join, extname, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { arcs, props, built } from "../docs/data/arcs.js";
-import { citationsIn } from "../docs/js/cite.js";
+import { citationsIn, citationHref, usesOf } from "../docs/js/cite.js";
 
 const DOCS = resolve(fileURLToPath(new URL("../docs/", import.meta.url)));
 const SHOTS = (() => { const i = process.argv.indexOf("--shots"); return i > 0 ? process.argv[i + 1] : null; })();
@@ -263,6 +263,58 @@ for (const n of built) {
 
   if (SPECIFIC[n]) await SPECIFIC[n]();
 }
+
+// ── Foundations (defs.html) and citation links (F-011, F-007) ────────
+await desktop();
+await go("/defs.html");
+const ids = await ev("[...document.querySelectorAll('.found-entry')].map(e => e.id)");
+const want = [
+  ...Array.from({ length: 23 }, (_, i) => `def-${i + 1}`),
+  ...Array.from({ length: 5 }, (_, i) => `post-${i + 1}`),
+  ...Array.from({ length: 5 }, (_, i) => `cn-${i + 1}`),
+];
+check("defs: 23 definitions, 5 postulates, 5 common notions, anchored in order",
+  JSON.stringify(ids) === JSON.stringify(want), `${ids.length} entries`);
+check("defs: Heath's bold terms rendered", await ev("document.querySelectorAll('#def-1 .term').length") === 1);
+await shot("defs");
+
+const anchors = new Set(ids);
+const builtSet = new Set(built);
+const dangling = [];
+for (const n of built) {
+  const data = (await import(`../docs/data/props/${pad(n)}.js`)).default;
+  for (const s of data.steps) {
+    for (const c of citationsIn(s.text)) {
+      const href = citationHref(c);
+      const ok = href?.startsWith("defs.html#") ? anchors.has(href.slice(10))
+        : href?.startsWith("prop.html?p=") ? builtSet.has(Number(href.slice(12))) : false;
+      if (!ok) dangling.push(`I.${n}: ${c}`);
+    }
+  }
+}
+check("citations: every citation in every built proposition resolves (F-007)", dangling.length === 0, dangling.join(", "));
+
+for (const n of built) {
+  const data = (await import(`../docs/data/props/${pad(n)}.js`)).default;
+  const first = usesOf(data).find((c) => citationHref(c)?.startsWith("defs.html#"));
+  if (!first) continue;
+  await go("/defs.html");
+  const cited = await ev(`document.querySelector('#${citationHref(first).slice(10)} .found-cited')?.textContent ?? ''`);
+  check(`defs: ${first} lists I.${n} under "Cited in"`, cited.includes(`I.${n}`), cited);
+}
+
+await go(`/prop.html?p=${Math.min(...built)}`);
+await lastStep();
+const link = await ev("document.querySelector('.step-text a')?.getAttribute('href')");
+await ev("document.querySelector('.step-text a').click()"); await wait(900);
+const landed = await ev("({ path: location.pathname + location.hash, target: document.querySelector('.found-entry.is-target')?.id ?? null })");
+check("citations: clicking a citation opens defs.html at that entry, highlighted",
+  link && landed.path === `/${link}` && landed.target === link.split("#")[1], JSON.stringify(landed));
+
+await phone();
+await go("/defs.html");
+check("defs: no horizontal scroll at 390 px (AV-006)", await ev("document.documentElement.scrollWidth") <= 390);
+await desktop();
 
 // ── Routing ──────────────────────────────────────────────────────────
 await desktop();

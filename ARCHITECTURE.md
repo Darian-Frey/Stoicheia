@@ -42,7 +42,9 @@ Data flows one way: the proposition data file is the single source of truth for 
 
 **`data/props/NN.js`** — One ES module per proposition exporting a single object (schema in SPEC.md §Proposition data). Contains the statement, givens with default positions, construction steps with the objects each introduces and Heath's text for each step (the step texts together are the proof, with citations inline), and the claims. Its dependencies are derived from the citations in the step texts (`js/cite.js`), not declared.
 
-**`data/arcs.js`, `data/foundations.js`** — Static tables for the index and the definitions page.
+**`data/arcs.js`, `data/foundations.js`** — Static tables for the index and the definitions page. `foundations.js` holds Heath's Definitions 1–23, Postulates 1–5 and Common Notions 1–5, transcribed from the scan.
+
+**`defs.js`** — The definitions page. Renders `foundations.js` with one anchor per entry (the targets of every citation link), highlights the anchored entry, and lists under each entry the built propositions that cite it, derived from their step text by `cite.js`.
 
 **`tools/`** — Author-side only, never served. Cross-reference checker for the docs; data linter that loads every proposition, drags each given through a grid of positions, and asserts the claims hold.
 

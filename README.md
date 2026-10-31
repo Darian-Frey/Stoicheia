@@ -47,7 +47,8 @@ stoicheia/
 │   │   ├── readout.js    # Measurements and QED check
 │   │   ├── cite.js       # Citation grammar; derives footers and dependencies
 │   │   ├── prop.js       # Page bootstrap: loads data, wires modules
-│   │   └── index.js      # Index: 48 cards by arc, miniatures of built props
+│   │   ├── index.js      # Index: 48 cards by arc, miniatures of built props
+│   │   └── defs.js       # Definitions, postulates, common notions page
 │   └── data/
 │       ├── props/        # One file per proposition: 01.js … 48.js
 │       ├── arcs.js       # Arc groupings for the index
