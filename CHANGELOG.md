@@ -26,6 +26,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - `check_pages.mjs`: foundations checks (33 anchored entries, bold terms, every citation resolves, "Cited in", citation click lands highlighted, 390 px).
 - Proposition I.2 (`data/props/02.js`): Heath p. 244, checked against the scan; built and on the index. `scene.js` gains `extend` (a line produced past a point, Post. 2) and `onCircle` (naming points on a circle); `check_pages.mjs` gains I.2-specific degenerate checks.
 - D-011: citations Heath leaves implicit are added in braces, `{Def. 15}`, rendered muted with a tooltip and a note; I.1 gains {Def. 20}, I.2 gains {Def. 15} ×2 and {Def. 20}. `cite.js` gains `citationEntries`; tests and `check_pages.mjs` cover both kinds.
+- Proposition I.3 (`data/props/03.js`): Heath pp. 246–247, checked against the scan; no added citations needed. Engine: `circleLen` (a circle with a carried radius, licensed by I.2), `label` on points (hide a letter) and segments (a one-letter line name), and readout `requires` (shows NOT AS GIVEN when the givens break the hypothesis, e.g. C longer than AB, and outlines the figure as for DEGENERATE; the readout now owns the frame state).
 ### Changed
 - F-007 and F-011 Complete after the author's review of the definitions page.
 - D-005: `TESTING.md` exemption revisited after the browser check was added, and kept; new revisit trigger recorded.

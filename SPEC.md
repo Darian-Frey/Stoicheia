@@ -64,6 +64,7 @@ Constructors. `of` is flattened before the call: a point contributes one input, 
 | `by` | makes `kind` | arity | flattened inputs | needs `pick` |
 |---|---|---|---|---|
 | `circle` | circle | 2 | centre, a point on the circle | — |
+| `circleLen` | circle | 3 | centre, then a segment whose length is the radius | — |
 | `join` | segment | 2 | endpoints | — |
 | `ray` | ray | 2 | origin, a point it passes through | — |
 | `line` | line | 2 | two points on it | — |
@@ -77,11 +78,15 @@ Constructors. `of` is flattened before the call: a point contributes one input, 
 | `xCC` | point | 4 | centre and radius of each circle | yes |
 | `polygon` | polygon | ≥ 3 | vertices in order (points only, not flattened) | — |
 
+`circleLen` carries a distance: Post. 3 only allows a circle through a given point, and I.2 is what licenses placing a given length elsewhere. Use it only in propositions that cite I.2 (I.3 onward), and keep it a helper (in no `show` list).
+
 `extend` is the point `len` units beyond Q on the line P → Q: the far end of a line produced (Post. 2) where Euclid fixes no length, usually a naming point (I.2's E, F); `null` when P = Q. `onCircle` is the point on the circle in screen direction `deg` (0 right, 90 up), for naming points Heath places on a circle without constructing them (I.2's H, K); `null` when the radius is 0.
 
 So `of: ["A", "B", "circA"]` gives `xLC` its four inputs (A, B, centre, radius), and `of: ["circA", "circB"]` gives `xCC` its four.
 
 Values, as returned by the scene: point `{x, y}`; segment, ray, line `{A, B}` (B fixes direction); circle `{O, r}`; angleMark `{A, V, B}`; polygon `{P: [points]}`. A value is `null` when the object does not exist in the current configuration (an empty intersection, or any `null` input); everything built on it is then `null` too, and the scene reports itself degenerate. Malformed data (unknown constructor, wrong kind or arity, forward reference, missing or invalid `pick`) is rejected when the scene is created, naming the object; recompute itself never throws.
+
+`label` (optional): on a point, the letter drawn instead of its id, with `""` drawing none (the unlettered ends of I.3's line C); on a segment, a letter drawn beside its midpoint, for a line Heath names by one letter.
 
 `role` (optional) sets the figure colour: `"given"` (`--ink`), `"construction"` (`--teal`, dashed for curves and lines) or `"result"` (`--amber`). Default: free points and joins of two free points are given; circles, rays and lines are construction; everything else is result. Objects listed in no step's `show` are construction helpers and are never drawn.
 
@@ -106,6 +111,7 @@ export default {
   ],
   measure: [ "AB", "AC", "BC" ],                 // lengths shown in readout
   unit: "AB",                                    // optional; display unit, defaults to measure[0]
+  requires: [ { gt: ["AB", "C"], text: "AB must be greater than C" } ],  // optional hypotheses (I.3)
   claims: [
     { label: "EQUILATERAL", eq: ["AB","AC","BC"], from: 3 }   // active from step index 3
   ],
@@ -114,6 +120,8 @@ export default {
 ```
 
 Each step's `text` is Heath's wording for that stage of the construction or proof, transcribed, with citations inserted inline in brackets (`[Post. 3]`) and nothing else changed (D-004). Read in order, the step texts are the complete proof; there is no separate proof field or panel (D-010). `text` may contain `\n` to separate paragraphs, following Heath's own breaks. The card's footer is derived from the citations inline in `text` (first appearance, no repeats); a step marked `given: true` states the hypothesis, relies on nothing, and shows "Given" instead. There is no `cite` field (IMP-006). `short` is the step's name in the transport bar (GIVEN · CIRCLE A · …). `brief` is a one-line header summary (GIVEN / REQUIRED) and, like `note`, is the site's wording, not Heath's. Commentary that is not Heath's (e.g. "A and B may be dragged") does not go in `text`; if wanted it goes in an optional `note` field, rendered visibly apart from the proof text.
+
+`requires` lists hypotheses the givens must satisfy, each a `gt: [segment, segment]` with the text to show. While one fails the readout shows `NOT AS GIVEN · <text>` instead of evaluating claims, since the proposition does not apply, and the figure's frame is outlined dashed amber as for DEGENERATE; DEGENERATE takes precedence.
 
 Claim forms: `eq` (all equal; residual is the worst pair), `gt: [a, b]`, `parallel: [seg, seg]`, `on: [point, line]`, `perp: [seg, seg]`, `areaEq: [poly, poly]`, `angleEq: [[A,V,B],[C,W,D]]`, `sum: {parts:[…], whole:…}`.
 

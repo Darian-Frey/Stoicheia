@@ -49,6 +49,9 @@ export function createReadout({ scene, data, intro, els }) {
   const measure = data.measure ?? [];
   const unitId = data.unit ?? measure[0];
   const claims = data.claims ?? [];
+  // Hypotheses the givens must satisfy (I.3: AB the greater). When one
+  // fails, the claims are not evaluated: the proposition does not apply.
+  const requires = data.requires ?? [];
 
   els.grid.replaceChildren();
   const cells = measure.map((id) => {
@@ -72,10 +75,24 @@ export function createReadout({ scene, data, intro, els }) {
       value.textContent = shown && l !== null && unit > 0 ? (l / unit).toFixed(3) : "—";
     }
 
+    const unmet = degenerate ? null : requires.find((q) => {
+      const [a, b] = q.gt.map((id) => lengthOf(scene, id));
+      return !(a !== null && b !== null && a - b > TAU * Math.max(1, a, b));
+    });
+    // The figure's frame shows the same state as the status line: dashed
+    // when the configuration is degenerate or breaks the hypothesis.
+    els.frame?.classList.toggle("is-degenerate", degenerate);
+    els.frame?.classList.toggle("is-not-given", Boolean(unmet));
+
     els.status.className = "readout-status";
     if (degenerate) {
       els.status.classList.add("is-degenerate");
       els.status.textContent = "DEGENERATE";
+      return;
+    }
+    if (unmet) {
+      els.status.classList.add("is-fail");
+      els.status.textContent = `NOT AS GIVEN · ${unmet.text}`;
       return;
     }
     const lines = [];

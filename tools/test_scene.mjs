@@ -230,6 +230,29 @@ test("I.2: AL equals BC as the givens move", () => {
   });
 });
 
+test("circleLen: centre O, radius the length of a segment", () => {
+  const s = createScene([
+    { id: "O", kind: "point", free: true, at: { x: 0, y: 0 } },
+    { id: "P", kind: "point", free: true, at: { x: 10, y: 10 } },
+    { id: "Q", kind: "point", free: true, at: { x: 13, y: 14 } },
+    { id: "PQ", kind: "segment", by: "join", of: ["P", "Q"] },
+    { id: "c", kind: "circle", by: "circleLen", of: ["O", "PQ"] },
+  ]);
+  assert.equal(s.value("c").r, 5);
+  nearPt(s.value("c").O, p(0, 0), "centre");
+});
+
+test("I.3: AE equals C as the givens move", () => {
+  const len = (v) => dist(v.A, v.B);
+  return import("../docs/data/props/03.js").then(({ default: d }) => {
+    const s = createScene(d.objects);
+    for (const [id, P] of [["A", p(150, 350)], ["B", p(500, 200)], ["C2", p(400, 60)], ["C1", p(300, 140)]]) {
+      s.move(id, P);
+      assert.ok(Math.abs(len(s.value("AE")) - len(s.value("C"))) < 1e-9, `after moving ${id}`);
+    }
+  });
+});
+
 test("createScene rejects malformed data", () => {
   const A = { id: "A", kind: "point", free: true, at: { x: 0, y: 0 } };
   const B = { id: "B", kind: "point", free: true, at: { x: 1, y: 0 } };

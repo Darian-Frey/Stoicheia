@@ -97,6 +97,11 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
         p.shape = el("line", {
           class: `fig-line ${role}`,
         }, def.kind === "segment" && role !== "role-construction" ? layer.lines : layer.construction);
+        // A line Heath names by a single letter (I.3's C) carries `label`.
+        if (def.label) {
+          p.label = el("text", { class: `fig-label ${role}` }, layer.labels);
+          p.label.textContent = def.label;
+        }
         break;
       case "polygon":
         p.shape = el("polygon", { class: `fig-poly ${role}` }, layer.fill);
@@ -107,8 +112,12 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
       case "point": {
         const naming = def.mark === "label";
         if (!naming) p.shape = el("circle", { r: POINT_R, class: `fig-point ${role}` }, layer.points);
-        p.label = el("text", { class: `fig-label ${role}${naming ? " is-naming" : ""}` }, layer.labels);
-        p.label.textContent = id;
+        // `label: ""` hides the letter (the unnamed ends of I.3's line C).
+        const text = def.label ?? id;
+        if (text) {
+          p.label = el("text", { class: `fig-label ${role}${naming ? " is-naming" : ""}` }, layer.labels);
+          p.label.textContent = text;
+        }
         if (def.free && interactive) p.handle = makeHandle(id);
         break;
       }
@@ -189,7 +198,6 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
       if (visible) visible = draw(def, v, p, G) !== false;
       for (const e of [p.shape, p.label, p.handle]) e?.classList.toggle("is-hidden", !visible);
     }
-    svg.closest(".figure")?.classList.toggle("is-degenerate", scene.isDegenerate());
   }
 
   function draw(def, v, p, G) {
@@ -199,6 +207,7 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
         return v.r > 0;
       case "segment":
         setAttrs(p.shape, { x1: v.A.x, y1: v.A.y, x2: v.B.x, y2: v.B.y });
+        if (p.label) placeLabel(p.label, { x: (v.A.x + v.B.x) / 2, y: (v.A.y + v.B.y) / 2 }, G);
         return true;
       case "ray": case "line": {
         const d = dist(v.A, v.B);
@@ -220,14 +229,19 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
       case "point": {
         p.shape && setAttrs(p.shape, { cx: v.x, cy: v.y });
         p.handle && setAttrs(p.handle, { cx: v.x, cy: v.y });
-        const dx = v.x - G.x, dy = v.y - G.y;
-        const d = Math.hypot(dx, dy);
-        const [ux, uy] = d > 1e-9 ? [dx / d, dy / d] : [0, -1];
-        setAttrs(p.label, { x: v.x + LABEL_OFFSET * ux, y: v.y + LABEL_OFFSET * uy });
+        if (p.label) placeLabel(p.label, v, G);
         return true;
       }
     }
     return true;
+  }
+
+  // Labels sit LABEL_OFFSET away from P, on the side away from the centre G.
+  function placeLabel(label, P, G) {
+    const dx = P.x - G.x, dy = P.y - G.y;
+    const d = Math.hypot(dx, dy);
+    const [ux, uy] = d > 1e-9 ? [dx / d, dy / d] : [0, -1];
+    setAttrs(label, { x: P.x + LABEL_OFFSET * ux, y: P.y + LABEL_OFFSET * uy });
   }
 
   function anglePath({ A, V, B }) {

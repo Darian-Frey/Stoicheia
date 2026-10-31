@@ -31,6 +31,9 @@ const LINEAR = new Set(["segment", "ray", "line"]);
 // [A, B], circles to [O, r]).
 const CONSTRUCTORS = {
   circle: { kind: "circle", arity: 2, make: ([O, T]) => ({ O, r: dist(O, T) }) },
+  // Centre O, radius the length of a segment PQ: carrying a distance, which
+  // Post. 3 does not allow and I.2 then justifies. Cite I.2 when used.
+  circleLen: { kind: "circle", arity: 3, make: ([O, P, Q]) => ({ O, r: dist(P, Q) }) },
   join:   { kind: "segment", arity: 2, make: ([A, B]) => ({ A, B }) },
   ray:    { kind: "ray", arity: 2, make: ([A, B]) => ({ A, B }) },
   line:   { kind: "line", arity: 2, make: ([A, B]) => ({ A, B }) },

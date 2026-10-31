@@ -95,7 +95,7 @@ async function main() {
   const intro = introSteps(data.steps);
   const readout = createReadout({
     scene, data, intro,
-    els: { grid: $("readout-grid"), status: $("readout-status") },
+    els: { grid: $("readout-grid"), status: $("readout-status"), frame: document.querySelector(".figure") },
   });
   const figure = createFigure({
     svg: $("figure-svg"),

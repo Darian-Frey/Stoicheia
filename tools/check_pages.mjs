@@ -191,6 +191,20 @@ const SPECIFIC = {
     await dragPoint("C", 150, 300);
     check("I.2: C dropped onto B shows DEGENERATE (BC has no length)", (await status()) === "DEGENERATE");
   },
+  3: async () => {
+    await go("/prop.html?p=3"); await lastStep();
+    const labels = await ev("[...document.querySelectorAll('.fig-label')].map(t => t.textContent)");
+    check("I.3: line C is labelled once, its ends unlettered", labels.filter((t) => t === "C").length === 1
+      && !labels.some((t) => /^C\d$/.test(t)), JSON.stringify(labels));
+    await dragPoint("C2", 590, 100);
+    check("I.3: C longer than AB shows NOT AS GIVEN, not a claim", /^NOT AS GIVEN/.test(await status()), await status());
+    check("I.3: NOT AS GIVEN also outlines the figure", await ev("document.querySelector('.figure').classList.contains('is-not-given')"));
+    await dragPoint("C2", 440, 100);
+    check("I.3: C shorter again: AE = C holds", holds(await status()), await status());
+    check("I.3: and the outline clears", !(await ev("document.querySelector('.figure').className")).match(/is-(not-given|degenerate)/));
+    await dragPoint("C2", 330, 100);
+    check("I.3: C with no length shows DEGENERATE", (await status()) === "DEGENERATE");
+  },
 };
 
 // ── Stamps (BUG-005) ─────────────────────────────────────────────────
