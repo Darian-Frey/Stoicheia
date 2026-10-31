@@ -253,6 +253,45 @@ test("I.3: AE equals C as the givens move", () => {
   });
 });
 
+test("on: a free point held on a circle, moving with its centre", () => {
+  const s = createScene([
+    { id: "O", kind: "point", free: true, at: { x: 0, y: 0 } },
+    { id: "T", kind: "point", free: true, at: { x: 5, y: 0 } },
+    { id: "c", kind: "circle", by: "circle", of: ["O", "T"] },
+    { id: "P", kind: "point", free: true, on: "c", at: { x: 0, y: 30 } },
+  ]);
+  nearPt(s.value("P"), p(0, 5), "projected from at");
+  s.move("P", p(-100, 0));
+  nearPt(s.value("P"), p(-5, 0), "dragged: direction kept, radius imposed");
+  s.move("O", p(10, 10));
+  // Radius is now |OT| = √125 (T stayed at (5, 0)); direction (−1, 0) is kept.
+  nearPt(s.value("P"), p(10 - Math.sqrt(125), 10), "follows centre");
+});
+
+test("transfer: places F as C is placed relative to A and AB", () => {
+  const s = createScene([
+    { id: "A", kind: "point", free: true, at: { x: 0, y: 0 } },
+    { id: "B", kind: "point", free: true, at: { x: 4, y: 0 } },
+    { id: "C", kind: "point", free: true, at: { x: 1, y: 2 } },
+    { id: "D", kind: "point", free: true, at: { x: 10, y: 10 } },
+    { id: "E", kind: "point", free: true, at: { x: 10, y: 14 } },
+    { id: "F", kind: "point", by: "transfer", of: ["A", "B", "C", "D", "E"] },
+  ]);
+  // AB → DE is a quarter turn (screen): (x, y) → (−y, x); C − A = (1, 2) → (−2, 1).
+  nearPt(s.value("F"), p(8, 11), "F");
+});
+
+test("I.4: the conclusions hold as the givens move", () => {
+  return Promise.all([import("../docs/data/props/04.js"), import("../docs/js/readout.js")])
+    .then(([{ default: d }, { evaluateClaim }]) => {
+      const s = createScene(d.objects);
+      for (const [id, P] of [["A", p(120, 200)], ["E", p(500, 350)], ["C", p(280, 250)], ["D", p(400, 100)], ["B", p(40, 420)]]) {
+        s.move(id, P);
+        for (const c of d.claims) assert.ok(evaluateClaim(s, c).ok, `${c.label} after moving ${id}`);
+      }
+    });
+});
+
 test("createScene rejects malformed data", () => {
   const A = { id: "A", kind: "point", free: true, at: { x: 0, y: 0 } };
   const B = { id: "B", kind: "point", free: true, at: { x: 1, y: 0 } };
@@ -272,6 +311,7 @@ test("createScene rejects malformed data", () => {
     [[{ id: "A", kind: "point", free: true }], /finite "at"/],
     [[A, B, { id: "P", kind: "polygon", by: "polygon", of: ["A", "B"] }], /at least 3/],
     [[A, B, { id: "E", kind: "point", by: "extend", of: ["A", "B"] }], /finite "len"/],
+    [[A, { id: "P", kind: "point", free: true, on: "A", at: { x: 1, y: 1 } }], /must name a circle/],
     [[A, B, { id: "AB", kind: "segment", by: "join", of: ["A", "B"] },
       { id: "P", kind: "polygon", by: "polygon", of: ["A", "B", "AB"] }], /points only/],
   ];

@@ -38,6 +38,19 @@ const CONSTRUCTORS = {
   ray:    { kind: "ray", arity: 2, make: ([A, B]) => ({ A, B }) },
   line:   { kind: "line", arity: 2, make: ([A, B]) => ({ A, B }) },
   angle:  { kind: "angleMark", arity: 3, make: ([A, V, B]) => ({ A, V, B }) },
+  // Image of C under the motion (no reflection) taking A to D and the ray
+  // AB along the ray DE: the vertex F of a triangle DEF placed as ABC is,
+  // given DE = AB (I.4's hypothesis).
+  transfer: {
+    kind: "point", arity: 5,
+    make: ([A, B, C, D, E]) => {
+      const u = dir(A, B), w = dir(D, E);
+      if ((u.x === 0 && u.y === 0) || (w.x === 0 && w.y === 0)) return null;
+      const cos = u.x * w.x + u.y * w.y, sin = u.x * w.y - u.y * w.x;
+      const vx = C.x - A.x, vy = C.y - A.y;
+      return { x: D.x + vx * cos - vy * sin, y: D.y + vx * sin + vy * cos };
+    },
+  },
   // Polygon: three or more points, in order; `of` may list points only.
   polygon: { kind: "polygon", arity: "points", make: (P) => ({ P }) },
   mid:    { kind: "point", arity: 2, make: ([A, B]) => mid(A, B) },
@@ -85,6 +98,9 @@ function validate(defs) {
       if (d.kind !== "point") throw new Error(`${where}: only points can be free`);
       if (!Number.isFinite(d.at?.x) || !Number.isFinite(d.at?.y)) {
         throw new Error(`${where}: free point needs a finite "at"`);
+      }
+      if (d.on !== undefined && seen.get(d.on)?.kind !== "circle") {
+        throw new Error(`${where}: "on" must name a circle declared earlier`);
       }
       seen.set(d.id, d);
       continue;
@@ -168,6 +184,10 @@ export function createScene(defs) {
   const values = new Map();
   const memory = new Map(); // id → last chosen point, for ambiguous picks
   const free = new Map(defs.filter((d) => d.free).map((d) => [d.id, { x: d.at.x, y: d.at.y }]));
+  // A free point with `on: circle` stays on that circle: the scene keeps its
+  // direction from the centre (so it moves with the centre) and places it
+  // at the radius. aim: id → direction, set from `at` until first dragged.
+  const aim = new Map();
 
   const valueOf = (id) => values.get(id) ?? null;
 
@@ -192,6 +212,14 @@ export function createScene(defs) {
   }
 
   function compute(d) {
+    if (d.free && d.on !== undefined) {
+      const c = valueOf(d.on);
+      if (!c || !(c.r > 0)) return null;
+      const a = aim.get(d.id) ?? { x: d.at.x - c.O.x, y: d.at.y - c.O.y };
+      const len = Math.hypot(a.x, a.y);
+      if (len === 0) return null;
+      return { x: c.O.x + (c.r * a.x) / len, y: c.O.y + (c.r * a.y) / len };
+    }
     if (d.free) return free.get(d.id);
     const parts = [];
     for (const ref of d.of) {
@@ -233,6 +261,11 @@ export function createScene(defs) {
     move(id, P) {
       if (!free.has(id) || !Number.isFinite(P?.x) || !Number.isFinite(P?.y)) return false;
       free.set(id, { x: P.x, y: P.y });
+      const d = byId.get(id);
+      if (d.on !== undefined) {
+        const c = valueOf(d.on);
+        if (c && (P.x !== c.O.x || P.y !== c.O.y)) aim.set(id, { x: P.x - c.O.x, y: P.y - c.O.y });
+      }
       recompute();
       return true;
     },
@@ -240,6 +273,7 @@ export function createScene(defs) {
     reset() {
       for (const d of defs) if (d.free) free.set(d.id, { x: d.at.x, y: d.at.y });
       memory.clear();
+      aim.clear();
       recompute();
     },
     /** True if any object fails to exist in the current configuration. */

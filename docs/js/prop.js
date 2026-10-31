@@ -48,7 +48,7 @@ function brief(data) {
   el.replaceChildren();
   const parts = [];
   if (data.brief?.given) parts.push(`GIVEN: ${data.brief.given}`);
-  if (data.brief?.required) parts.push(`REQUIRED: ${data.brief.required}`);
+  if (data.brief?.required) parts.push(`${data.kind === "theorem" ? "TO PROVE" : "REQUIRED"}: ${data.brief.required}`);
   parts.forEach((t, i) => {
     if (i) {
       const sep = document.createElement("span");

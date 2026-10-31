@@ -77,8 +77,11 @@ Constructors. `of` is flattened before the call: a point contributes one input, 
 | `xLC` | point | 4 | two points of the line, circle centre, radius | yes |
 | `xCC` | point | 4 | centre and radius of each circle | yes |
 | `polygon` | polygon | ≥ 3 | vertices in order (points only, not flattened) | — |
+| `transfer` | point | 5 | A, B, C, D, E | — |
 
-`circleLen` carries a distance: Post. 3 only allows a circle through a given point, and I.2 is what licenses placing a given length elsewhere. Use it only in propositions that cite I.2 (I.3 onward), and keep it a helper (in no `show` list).
+`circleLen` carries a distance: Post. 3 only allows a circle through a given point, and I.2 is what licenses placing a given length elsewhere. As a construction step use it only in propositions that cite I.2 (I.3 onward). It may also express a hypothesis on the givens (I.4: DE = AB), which constructs nothing. Keep it a helper (in no `show` list).
+
+`transfer` is the image of C under the motion, without reflection, that takes A to D and the ray AB along the ray DE. With DE = AB it is the third vertex F of a triangle DEF placed as ABC is: DF = AC and ∠EDF = ∠BAC, the same way round. It sets up I.4's hypothesis; it is not a construction Euclid performs.
 
 `extend` is the point `len` units beyond Q on the line P → Q: the far end of a line produced (Post. 2) where Euclid fixes no length, usually a naming point (I.2's E, F); `null` when P = Q. `onCircle` is the point on the circle in screen direction `deg` (0 right, 90 up), for naming points Heath places on a circle without constructing them (I.2's H, K); `null` when the radius is 0.
 
@@ -88,7 +91,9 @@ Values, as returned by the scene: point `{x, y}`; segment, ray, line `{A, B}` (B
 
 `label` (optional): on a point, the letter drawn instead of its id, with `""` drawing none (the unlettered ends of I.3's line C); on a segment, a letter drawn beside its midpoint, for a line Heath names by one letter.
 
-`role` (optional) sets the figure colour: `"given"` (`--ink`), `"construction"` (`--teal`, dashed for curves and lines) or `"result"` (`--amber`). Default: free points and joins of two free points are given; circles, rays and lines are construction; everything else is result. Objects listed in no step's `show` are construction helpers and are never drawn.
+A free point may carry `on: <circle id>`: it stays on that circle, which must be declared earlier. The scene keeps its direction from the centre (from `at` until first dragged), so it moves with the centre, and imposes the radius; a drag sets only the direction. I.4 holds E on a circle about D of radius AB so that DE = AB as the givens move.
+
+`role` (optional) sets the figure colour: `"given"` (`--ink`), `"construction"` (`--teal`, dashed for curves and lines), `"result"` (`--amber`) or, for a polygon, `"ghost"` (amber dashed outline with a faint fill, drawn over the lines: a figure applied to another, as in I.4's superposition). Default: free points and joins of two free points are given; circles, rays and lines are construction; everything else is result. Objects listed in no step's `show` are construction helpers and are never drawn.
 
 `mark: "label"` (points only, optional) draws the letter alone: no dot, no drag handle. It is for *naming points*, letters Heath uses to name a figure (the D in "the circle BCD") that Euclid does not construct. Place them where Heath's figure does; in I.1, D and E are the far intersections of line AB with circles A and B. A naming point whose intersection is empty is hidden, like any other derived object.
 
@@ -101,7 +106,7 @@ export default {
   title: "On a given finite straight line to construct an equilateral triangle.",
   short: "Equilateral triangle",
   given: "Let AB be the given finite straight line.",
-  brief: { given: "finite straight line AB", required: "equilateral triangle on AB" },  // header summary; not Heath's text
+  brief: { given: "finite straight line AB", required: "equilateral triangle on AB" },  // header summary; not Heath's text; shown as REQUIRED (problems) or TO PROVE (theorems)
   objects: [ /* scene object schema, dependency order */ ],
   steps: [
     { title: "The given line", short: "Given", text: "…", given: true, note: "…", show: ["A","B","AB"] },
@@ -123,9 +128,11 @@ Each step's `text` is Heath's wording for that stage of the construction or proo
 
 `requires` lists hypotheses the givens must satisfy, each a `gt: [segment, segment]` with the text to show. While one fails the readout shows `NOT AS GIVEN · <text>` instead of evaluating claims, since the proposition does not apply, and the figure's frame is outlined dashed amber as for DEGENERATE; DEGENERATE takes precedence.
 
-Claim forms: `eq` (all equal; residual is the worst pair), `gt: [a, b]`, `parallel: [seg, seg]`, `on: [point, line]`, `perp: [seg, seg]`, `areaEq: [poly, poly]`, `angleEq: [[A,V,B],[C,W,D]]`, `sum: {parts:[…], whole:…}`.
+Measured quantities follow the kind of the object named: a segment gives its length, an `angleMark` its angle (radians internally, degrees to one decimal in the readout, cell name `∠ABC`), a polygon its area (cell name `△ABC`). Lengths and areas display in units of the reference segment (`unit`, default the first measured segment) and its square.
 
-Citations are written only inline in step text, comma-separated when several apply. Heath's own are in square brackets, `[Def. 15, C.N. 1]`; citations Stoicheia adds where Heath leaves an inference implicit are in braces, `{Def. 15}`, and render muted with a tooltip, in the text and the footer, plus a note under the footer (D-011). A citation given by Heath anywhere in a step's text counts as his in that step's footer. Each must be exactly `Def. N`, `Post. N`, `C.N. N` or `I.N`; the linter rejects anything else. A proposition's dependencies (`uses`) are not declared: `usesOf(data)` in `js/cite.js` derives them as every citation in its steps, in canonical order (Def., Post., C.N., then propositions, each by number). The dependency graph (F-012) and the linter use the same function, so the text, the footers and the graph cannot disagree.
+Claim forms: `eq: [ids]` — all equal; the ids name objects of one kind (segments, angleMarks or polygons), so the same form states equal lengths, equal angles (I.4's ∠ABC = ∠DEF) and equal areas ("the triangle will be equal to the triangle"); residual is the worst pair. Planned: `gt: [a, b]`, `parallel: [seg, seg]`, `on: [point, line]`, `perp: [seg, seg]`, `sum: {parts:[…], whole:…}`. The readout shows one line per claim.
+
+Citations are written only inline in step text, comma-separated when several apply. Square brackets hold a citation only when their content looks like one (begins `Def`, `Post`, `C.N` or `I.` with a number); Heath's own editorial brackets round passages he judges interpolated (I.4) stay plain text, and a mistyped citation still looks like one, so the grammar check still catches it. Heath's own are in square brackets, `[Def. 15, C.N. 1]`; citations Stoicheia adds where Heath leaves an inference implicit are in braces, `{Def. 15}`, and render muted with a tooltip, in the text and the footer, plus a note under the footer (D-011). A citation given by Heath anywhere in a step's text counts as his in that step's footer. Each must be exactly `Def. N`, `Post. N`, `C.N. N` or `I.N`; the linter rejects anything else. A proposition's dependencies (`uses`) are not declared: `usesOf(data)` in `js/cite.js` derives them as every citation in its steps, in canonical order (Def., Post., C.N., then propositions, each by number). The dependency graph (F-012) and the linter use the same function, so the text, the footers and the graph cannot disagree.
 
 ## Arcs (`data/arcs.js`)
 

@@ -212,26 +212,34 @@ a:hover { color: var(--amber-hi); }
 
 .readout-status {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
   font-size: 12px;
-  color: var(--teal);
   font-variant-numeric: tabular-nums;
 }
 
 .readout-status:empty { display: none; }
 
-.readout-status::before {
+/* One line per claim (or one DEGENERATE / NOT AS GIVEN line), each with its dot. */
+.readout-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--teal);
+}
+
+.readout-line::before {
   content: "";
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: currentColor;
   flex: none;
+  align-self: center;
 }
 
-.readout-status.is-fail,
-.readout-status.is-degenerate { color: var(--amber); }
+.readout-line.is-fail,
+.readout-line.is-degenerate { color: var(--amber); }
 
 /* ── Step card ────────────────────────────────────────────────────── */
 
@@ -504,6 +512,16 @@ a.card:hover .card-title { color: var(--ink); }
 .fig-poly.role-given { fill: var(--ink); }
 
 .fig-angle { fill: none; stroke: var(--amber); stroke-width: 1.5; }
+.fig-angle.role-given { stroke: var(--ink); }
+
+/* Superposition (I.4): the triangle applied to another, drawn dashed. */
+.fig-poly.role-ghost {
+  fill: var(--amber);
+  fill-opacity: 0.08;
+  stroke: var(--amber);
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+}
 
 .fig-point.role-given { fill: var(--ink); }
 .fig-point.role-construction { fill: var(--teal); }

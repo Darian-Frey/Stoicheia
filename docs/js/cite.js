@@ -32,6 +32,12 @@ export function citationHref(cite) {
   return parse(cite)?.href ?? null;
 }
 
+// Square brackets hold a citation only when their content looks like one;
+// Heath also brackets passages he judges interpolated ("[For if, when B
+// coincides with E …]", I.4), which stay plain text. A mistyped citation
+// ("Post 3") still looks like one, so the grammar check still catches it.
+const CITATION_SHAPED = /^(Def|Post|C\.?\s*N|I\.?\s*\d)/;
+
 /**
  * Split text into plain strings and citation groups:
  * "a [Post. 1] b {Def. 15}" →
@@ -41,9 +47,11 @@ export function splitCitations(text) {
   const out = [];
   let last = 0;
   for (const m of text.matchAll(/\[([^\]]+)\]|\{([^}]+)\}/g)) {
-    if (m.index > last) out.push(text.slice(last, m.index));
     const added = m[2] !== undefined;
-    out.push({ cites: (added ? m[2] : m[1]).split(/,\s*/), added });
+    const cites = (added ? m[2] : m[1]).split(/,\s*/);
+    if (!added && !cites.every((c) => CITATION_SHAPED.test(c))) continue; // editorial brackets
+    if (m.index > last) out.push(text.slice(last, m.index));
+    out.push({ cites, added });
     last = m.index + m[0].length;
   }
   if (last < text.length) out.push(text.slice(last));

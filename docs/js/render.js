@@ -104,7 +104,8 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
         }
         break;
       case "polygon":
-        p.shape = el("polygon", { class: `fig-poly ${role}` }, layer.fill);
+        // A ghost (superposition) is drawn over the lines it lies on.
+        p.shape = el("polygon", { class: `fig-poly ${role}` }, role === "role-ghost" ? layer.lines : layer.fill);
         break;
       case "angleMark":
         p.shape = el("path", { class: `fig-angle ${role}` }, layer.lines);

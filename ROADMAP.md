@@ -33,7 +33,7 @@ Phases follow the natural arcs of Book I. Phases are append-only; mark Complete 
 **Features delivered:** F-008 partial, F-009
 **Deliverables:**
 - [ ] Data files 09–26
-- [ ] Angle-claim support in readout (equal, greater-than)
+- [ ] Angle-claim support in readout (equal, greater-than) — angle readings and equal-angle claims brought forward to Phase 2 for I.4 (2026-10-31); greater-than still to do
 - [ ] Keyboard navigation
 **Acceptance:** Props 1–26 pass; inequality claims render as comparisons, not equalities.
 
@@ -43,7 +43,7 @@ Phases follow the natural arcs of Book I. Phases are append-only; mark Complete 
 **Features delivered:** F-008 partial, F-014
 **Deliverables:**
 - [ ] Data files 27–45
-- [ ] Parallel and area claims in readout
+- [ ] Parallel and area claims in readout — area readings and equal-area claims brought forward to Phase 2 for I.4 (2026-10-31); parallel and signed-area comparison still to do
 - [ ] Phone-width layout
 **Acceptance:** Props 1–45 pass; area claims use signed-area comparison per SPEC.md.
 

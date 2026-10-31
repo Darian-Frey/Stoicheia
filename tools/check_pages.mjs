@@ -205,6 +205,29 @@ const SPECIFIC = {
     await dragPoint("C2", 330, 100);
     check("I.3: C with no length shows DEGENERATE", (await status()) === "DEGENERATE");
   },
+  4: async () => {
+    await go("/prop.html?p=4"); await lastStep();
+    check("I.4: four claims, all holding", (await ev("document.querySelectorAll('.readout-line').length")) === 4
+      && holds(await status()), await status());
+    const cells = await ev("[...document.querySelectorAll('.readout-value')].map(e => e.textContent)");
+    check("I.4: angles read in degrees, areas in units squared", cells.length === 8 && /°$/.test(cells[2])
+      && /^\d+\.\d{3}$/.test(cells[6]), JSON.stringify(cells));
+    await dragPoint("E", 560, 380);
+    const de = await ev(`(() => { const [d, e] = ['D', 'E'].map(id => document.querySelector('.fig-handle[data-id="' + id + '"]'));
+      return Math.hypot(d.getAttribute('cx') - e.getAttribute('cx'), d.getAttribute('cy') - e.getAttribute('cy')); })()`);
+    const ab = await ev(`(() => { const [a, b] = ['A', 'B'].map(id => document.querySelector('.fig-handle[data-id="' + id + '"]'));
+      return Math.hypot(a.getAttribute('cx') - b.getAttribute('cx'), a.getAttribute('cy') - b.getAttribute('cy')); })()`);
+    check("I.4: turning DEF by E keeps DE = AB and all claims", Math.abs(de - ab) < 1e-6 && holds(await status()), `DE ${de}, AB ${ab}`);
+    await go("/prop.html?p=4");
+    await ev("document.querySelectorAll('.pip')[2].click()"); await wait(60);
+    check("I.4: the applied triangle is drawn as a ghost at the superposition step",
+      await ev("!document.querySelector('.fig-poly.role-ghost').classList.contains('is-hidden')"));
+    const bracket = await ev("document.getElementById('step-text').textContent");
+    await ev("document.querySelectorAll('.pip')[4].click()"); await wait(60);
+    check("I.4: Heath's editorial brackets render as text, his [C.N. 4] as a link",
+      /\[For if, when B coincides/.test(await ev("document.getElementById('step-text').textContent"))
+      && await ev("[...document.querySelectorAll('.step-text a')].map(a => a.textContent).join() === 'C.N. 4'"), bracket.slice(0, 40));
+  },
 };
 
 // ── Stamps (BUG-005) ─────────────────────────────────────────────────
@@ -274,11 +297,15 @@ for (const n of built) {
   const free = data.objects.filter((o) => o.free);
   for (const f of free) {
     await go(`/prop.html?p=${n}`); await lastStep();
+    const before = await pointOf(f.id);
     await dragPoint(f.id, f.at.x + 25, f.at.y + 15);
     const P = await pointOf(f.id);
+    // A point held on a circle (`on`) moves but cannot follow the pointer exactly.
+    const followed = f.on !== undefined
+      ? P && Math.hypot(P[0] - before[0], P[1] - before[1]) > 1
+      : P && Math.hypot(P[0] - f.at.x - 25, P[1] - f.at.y - 15) < 2;
     check(`${tag}: mouse drag moves ${f.id} and claims still hold`,
-      P && Math.hypot(P[0] - f.at.x - 25, P[1] - f.at.y - 15) < 2 && holds(await status()),
-      `${JSON.stringify(P)} ${await status()}`);
+      followed && holds(await status()), `${JSON.stringify(P)} ${await status()}`);
   }
   for (let i = 0; i < data.steps.length; i++) {
     await go(`/prop.html?p=${n}`);

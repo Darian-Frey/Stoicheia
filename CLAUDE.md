@@ -8,7 +8,7 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 
 - `design/instrument/` — reference mock-up of I.1: `Instrument.dc.html` (exact design values in inline styles) and `instrument-I1.pdf`. Layout reference only; its step text is a paraphrase, not Heath (D-004). `support.js` and `vendor/` are the mock-up's viewer runtime, not part of the site.
 - `docs/js/geom.js` — written 2026-10-30, all SPEC §Kernel functions; `tools/test_geom.mjs` passes (19 tests).
-- `docs/js/scene.js` — written 2026-10-30; `tools/test_scene.mjs` passes (18 tests).
+- `docs/js/scene.js` — written 2026-10-30; `tools/test_scene.mjs` passes (21 tests).
 - `index.html`, `js/index.js`, `data/arcs.js` — written 2026-10-31; 48 cards by arc, I.1 live with a miniature, 47 placeholders. Add each new proposition to `built` in `arcs.js`.
 - `defs.html`, `js/defs.js`, `data/foundations.js` — written 2026-10-31; Heath's Defs 1–23, Posts 1–5, C.N. 1–5 from pp. 153–155, checked against scan leaves 173–175 (author's check pending). Every citation in built propositions resolves (`check_pages.mjs`).
 - `render.js`, `stepper.js`, `readout.js`, `prop.js`, `instrument.css`, `prop.html`, `data/props/01.js` — written 2026-10-30; I.1 renders and drags end to end in headless Chrome (all acceptance checks pass). Author checked visually and on a phone 2026-10-30; F-002–F-006 and F-015 Complete.
@@ -18,7 +18,7 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 
 **Phase 1 — Foundation: Complete (2026-10-30).** I.1 is live at https://darian-frey.github.io/Stoicheia/prop.html?p=1 and passed its acceptance checks, including the author's visual check and a phone touch test (BUG-004 fixed). F-001–F-006 and F-015 Complete; F-007 completed in Phase 2 with `defs.html`.
 
-**Phase 2 — Constructions and congruence (I.2–I.8)** (ROADMAP). Started 2026-10-31 with the index (F-010): `index.html`, `js/index.js`, `data/arcs.js`. `defs.html` (F-011) done 2026-10-31. I.2 built 2026-10-31 (`02.js`, p. 244, leaf 264; `extend` and `onCircle` constructors added). I.3 built 2026-10-31 (`03.js`, pp. 246–247, leaves 266–267; `circleLen`, segment and hidden point `label`, readout `requires`). Next: I.4–I.8, prev/next (F-013). Each data file's Heath text is transcribed from the scan (Internet Archive `thirteenbookseu02heibgoog`) and checked line by line before it is marked done (AV-004).
+**Phase 2 — Constructions and congruence (I.2–I.8)** (ROADMAP). Started 2026-10-31 with the index (F-010): `index.html`, `js/index.js`, `data/arcs.js`. `defs.html` (F-011) done 2026-10-31. I.2 built 2026-10-31 (`02.js`, p. 244, leaf 264; `extend` and `onCircle` constructors added). I.3 built 2026-10-31 (`03.js`, pp. 246–247, leaves 266–267; `circleLen`, segment and hidden point `label`, readout `requires`). I.4 built 2026-10-31 (`04.js`, pp. 247–248, leaves 267–268; free points held `on` a circle, `transfer`, ghost polygons, angle and area readout and claims). Next: I.5–I.8, prev/next (F-013). Each data file's Heath text is transcribed from the scan (Internet Archive `thirteenbookseu02heibgoog`) and checked line by line before it is marked done (AV-004).
 
 ## Invariants
 

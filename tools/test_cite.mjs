@@ -32,6 +32,14 @@ test("splitCitations keeps text and groups in order, Heath's and added", () => {
     ["x ", { cites: ["Def. 20"], added: true }, " y"]);
 });
 
+test("Heath's editorial brackets are text, not citations; mistyped citations are still caught", () => {
+  const t = "hence [For if, when B coincides with E, two straight lines will enclose a space] and equal. [C.N. 4]";
+  assert.deepEqual(citationsIn(t), ["C.N. 4"]);
+  assert.equal(splitCitations(t)[0], "hence [For if, when B coincides with E, two straight lines will enclose a space] and equal. ");
+  assert.deepEqual(citationsIn("bad [Post 3]"), ["Post 3"]);
+  assert.ok(!isCitation("Post 3"));
+});
+
 test("citationEntries: added unless Heath also gives it in the same text (D-011)", () => {
   assert.deepEqual(citationEntries("a {Def. 15} b [C.N. 3] c {Def. 15}"),
     [{ cite: "Def. 15", added: true }, { cite: "C.N. 3", added: false }]);
