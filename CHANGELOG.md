@@ -28,6 +28,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - D-011: citations Heath leaves implicit are added in braces, `{Def. 15}`, rendered muted with a tooltip and a note; I.1 gains {Def. 20}, I.2 gains {Def. 15} ×2 and {Def. 20}. `cite.js` gains `citationEntries`; tests and `check_pages.mjs` cover both kinds.
 - Proposition I.3 (`data/props/03.js`): Heath pp. 246–247, checked against the scan; no added citations needed. Engine: `circleLen` (a circle with a carried radius, licensed by I.2), `label` on points (hide a letter) and segments (a one-letter line name), and readout `requires` (shows NOT AS GIVEN when the givens break the hypothesis, e.g. C longer than AB, and outlines the figure as for DEGENERATE; the readout now owns the frame state).
 - Proposition I.4 (`data/props/04.js`): Heath pp. 247–248, checked against the scan; first theorem (Q.E.D.); {C.N. 4} added twice (D-011). DEF follows the hypothesis (E held on a circle of radius AB about D; F placed by `transfer`); the superposition step shows ABC applied to DEF as a dashed ghost. Engine: free points `on` a circle, `transfer`, `role: "ghost"`; readout measures angles (degrees) and areas, `eq` claims over lengths, angles or areas, one status line per claim; theorems show TO PROVE. `cite.js` treats Heath's editorial brackets as text. Angle and area readout brought forward from Phases 3–4 (ROADMAP).
+- Proposition I.5 (`data/props/05.js`): Heath pp. 251–252, checked against the scan; {C.N. 3} twice and {I.4} once added (D-011). C held on a circle about A (AB = AC), F held on BD; each pair of triangles I.4 is applied to is shown at its step and cleared after. Engine: free points `on` a segment, step `hide`, angle-mark `radius`. `check_pages.mjs` touch check now drags towards the side of the figure with room.
 ### Changed
 - F-007 and F-011 Complete after the author's review of the definitions page.
 - D-005: `TESTING.md` exemption revisited after the browser check was added, and kept; new revisit trigger recorded.
@@ -46,6 +47,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - `cite` and `uses` fields from the proposition schema (IMP-006).
 - `proof` field from the proposition schema (D-010).
 ### Fixed
+- A point held `on` a circle or segment swung towards its starting position when its circle or segment moved before the point was first dragged (I.4: dragging D first rotated DEF); its direction or fraction is now fixed when the scene is built.
 - Browsers could run cached old modules against new data after an update: every page now carries an import map of versioned module URLs written by new `tools/stamp.mjs`, checked by `stamp.mjs --check` and `check_pages.mjs` (BUG-005).
 - Touch-dragging a point no longer scrolls the page: `touch-action: none` moved to the figure's `<svg>`, with a non-passive `touchmove` fallback (BUG-004).
 - `ccw`/`cw` restricted to `xCC` in SPEC §Branch selection; they cannot choose between line–circle candidates (BUG-003).

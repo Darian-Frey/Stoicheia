@@ -228,6 +228,21 @@ const SPECIFIC = {
       /\[For if, when B coincides/.test(await ev("document.getElementById('step-text').textContent"))
       && await ev("[...document.querySelectorAll('.step-text a')].map(a => a.textContent).join() === 'C.N. 4'"), bracket.slice(0, 40));
   },
+  5: async () => {
+    const shown = (cls) => ev(`[...document.querySelectorAll('.fig-poly')].filter(p => !p.classList.contains('is-hidden')).length`);
+    await go("/prop.html?p=5");
+    const at = async (i) => { await ev(`document.querySelectorAll('.pip')[${i}].click()`); await wait(50); return shown(); };
+    const polys = [await at(4), await at(5), await at(6), await at(7)];
+    check("I.5: each I.4 pair is shown at its step and cleared after", JSON.stringify(polys) === "[0,2,2,0]", JSON.stringify(polys));
+    await lastStep();
+    const before = await pointOf("F");
+    await dragPoint("F", 140, 420);
+    const after = await pointOf("F");
+    check("I.5: F slides along BD and the claims still hold", after && Math.hypot(after[0] - before[0], after[1] - before[1]) > 5
+      && holds(await status()) && (await ev("document.querySelectorAll('.readout-line').length")) === 3, await status());
+    await dragPoint("C", 450, 160);
+    check("I.5: C keeps AB = AC as it moves; base angles stay equal", holds(await status()), await status());
+  },
 };
 
 // ── Stamps (BUG-005) ─────────────────────────────────────────────────
@@ -322,13 +337,15 @@ for (const n of built) {
   const start = await centre(`.fig-handle[data-id="${free[0].id}"]`);
   const before = await pointOf(free[0].id);
   const t = (type, x, y) => send("Input.dispatchTouchEvent", { type, touchPoints: type === "touchEnd" ? [] : [{ x, y }] });
+  // Mostly vertical, towards the half of the figure with room to move.
+  const dy = before[1] < 235 ? 4 : -4;
   await t("touchStart", ...start);
-  for (let i = 1; i <= 20; i++) { await t("touchMove", start[0] + i, start[1] - i * 4); await wait(16); }
+  for (let i = 1; i <= 20; i++) { await t("touchMove", start[0] + i, start[1] + i * dy); await wait(16); }
   await t("touchEnd"); await wait(200);
   const after = await pointOf(free[0].id);
   const scrollY = await ev("scrollY");
   check(`${tag}: touch drag moves ${free[0].id} without scrolling the page`,
-    scrollY === 120 && after && before[1] - after[1] > 100, `scrollY ${scrollY}, ${JSON.stringify(before)} → ${JSON.stringify(after)}`);
+    scrollY === 120 && after && Math.abs(after[1] - before[1]) > 100, `scrollY ${scrollY}, ${JSON.stringify(before)} → ${JSON.stringify(after)}`);
   check(`${tag}: no horizontal scroll at 390 px (AV-006)`, await ev("document.documentElement.scrollWidth") <= 390);
   await shot(`p${pad(n)}-phone`);
   await desktop();

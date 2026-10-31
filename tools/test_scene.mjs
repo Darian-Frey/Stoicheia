@@ -268,6 +268,44 @@ test("on: a free point held on a circle, moving with its centre", () => {
   nearPt(s.value("P"), p(10 - Math.sqrt(125), 10), "follows centre");
 });
 
+test("on a circle, before any drag: moves with the centre, not towards at", () => {
+  const s = createScene([
+    { id: "O", kind: "point", free: true, at: { x: 0, y: 0 } },
+    { id: "R", kind: "point", free: true, at: { x: 0, y: 5 } },
+    { id: "c", kind: "circle", by: "circle", of: ["O", "R"] },
+    { id: "P", kind: "point", free: true, on: "c", at: { x: 5, y: 0 } },
+  ]);
+  nearPt(s.value("P"), p(5, 0), "start");
+  s.move("O", p(100, 0));
+  s.move("R", p(100, 5));
+  nearPt(s.value("P"), p(105, 0), "translated with its circle");
+});
+
+test("on a segment: keeps its fraction of the way along, clamped to the ends", () => {
+  const s = createScene([
+    { id: "P", kind: "point", free: true, at: { x: 0, y: 0 } },
+    { id: "Q", kind: "point", free: true, at: { x: 10, y: 0 } },
+    { id: "PQ", kind: "segment", by: "join", of: ["P", "Q"] },
+    { id: "F", kind: "point", free: true, on: "PQ", at: { x: 3, y: 5 } },
+  ]);
+  nearPt(s.value("F"), p(3, 0), "projected from at");
+  s.move("Q", p(20, 0));
+  nearPt(s.value("F"), p(6, 0), "keeps 0.3 of the way");
+  s.move("F", p(99, 9));
+  nearPt(s.value("F"), p(20, 0), "clamped to Q");
+});
+
+test("I.5: base angles and angles under the base stay equal", () => {
+  return Promise.all([import("../docs/data/props/05.js"), import("../docs/js/readout.js")])
+    .then(([{ default: d }, { evaluateClaim }]) => {
+      const s = createScene(d.objects);
+      for (const [id, P] of [["F", p(180, 330)], ["C", p(420, 150)], ["A", p(280, 40)], ["B", p(150, 260)]]) {
+        s.move(id, P);
+        for (const c of d.claims) assert.ok(evaluateClaim(s, c).ok, `${c.label} after moving ${id}`);
+      }
+    });
+});
+
 test("transfer: places F as C is placed relative to A and AB", () => {
   const s = createScene([
     { id: "A", kind: "point", free: true, at: { x: 0, y: 0 } },

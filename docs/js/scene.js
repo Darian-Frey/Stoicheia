@@ -99,8 +99,8 @@ function validate(defs) {
       if (!Number.isFinite(d.at?.x) || !Number.isFinite(d.at?.y)) {
         throw new Error(`${where}: free point needs a finite "at"`);
       }
-      if (d.on !== undefined && seen.get(d.on)?.kind !== "circle") {
-        throw new Error(`${where}: "on" must name a circle declared earlier`);
+      if (d.on !== undefined && !["circle", "segment"].includes(seen.get(d.on)?.kind)) {
+        throw new Error(`${where}: "on" must name a circle or segment declared earlier`);
       }
       seen.set(d.id, d);
       continue;
@@ -184,10 +184,20 @@ export function createScene(defs) {
   const values = new Map();
   const memory = new Map(); // id → last chosen point, for ambiguous picks
   const free = new Map(defs.filter((d) => d.free).map((d) => [d.id, { x: d.at.x, y: d.at.y }]));
-  // A free point with `on: circle` stays on that circle: the scene keeps its
-  // direction from the centre (so it moves with the centre) and places it
-  // at the radius. aim: id → direction, set from `at` until first dragged.
+  // A free point with `on` stays on that circle or segment. On a circle the
+  // scene keeps its direction from the centre (so it moves with the centre)
+  // and imposes the radius; on a segment it keeps its fraction of the way
+  // along (I.5's F, "taken at random on BD"). aim: id → direction or
+  // fraction, fixed from `at` on the first recompute and kept until dragged,
+  // so moving the circle or segment carries the point with it.
   const aim = new Map();
+
+  function fraction(s, P) {
+    const dx = s.B.x - s.A.x, dy = s.B.y - s.A.y;
+    const dd = dx * dx + dy * dy;
+    if (dd === 0) return 0;
+    return Math.min(1, Math.max(0, ((P.x - s.A.x) * dx + (P.y - s.A.y) * dy) / dd));
+  }
 
   const valueOf = (id) => values.get(id) ?? null;
 
@@ -212,10 +222,18 @@ export function createScene(defs) {
   }
 
   function compute(d) {
+    if (d.free && d.on !== undefined && byId.get(d.on).kind === "segment") {
+      const s = valueOf(d.on);
+      if (!s) return null;
+      if (!aim.has(d.id)) aim.set(d.id, fraction(s, d.at));
+      const t = aim.get(d.id);
+      return { x: s.A.x + t * (s.B.x - s.A.x), y: s.A.y + t * (s.B.y - s.A.y) };
+    }
     if (d.free && d.on !== undefined) {
       const c = valueOf(d.on);
       if (!c || !(c.r > 0)) return null;
-      const a = aim.get(d.id) ?? { x: d.at.x - c.O.x, y: d.at.y - c.O.y };
+      if (!aim.has(d.id)) aim.set(d.id, { x: d.at.x - c.O.x, y: d.at.y - c.O.y });
+      const a = aim.get(d.id);
       const len = Math.hypot(a.x, a.y);
       if (len === 0) return null;
       return { x: c.O.x + (c.r * a.x) / len, y: c.O.y + (c.r * a.y) / len };
@@ -262,7 +280,10 @@ export function createScene(defs) {
       if (!free.has(id) || !Number.isFinite(P?.x) || !Number.isFinite(P?.y)) return false;
       free.set(id, { x: P.x, y: P.y });
       const d = byId.get(id);
-      if (d.on !== undefined) {
+      if (d.on !== undefined && byId.get(d.on).kind === "segment") {
+        const s = valueOf(d.on);
+        if (s) aim.set(id, fraction(s, P));
+      } else if (d.on !== undefined) {
         const c = valueOf(d.on);
         if (c && (P.x !== c.O.x || P.y !== c.O.y)) aim.set(id, { x: P.x - c.O.x, y: P.y - c.O.y });
       }

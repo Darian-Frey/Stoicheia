@@ -37,6 +37,20 @@ export function introSteps(steps) {
   return intro;
 }
 
+/** Step index from which each object is hidden again (a step's `hide`). */
+export function outroSteps(steps) {
+  const outro = new Map();
+  steps.forEach((s, i) => {
+    for (const id of s.hide ?? []) if (!outro.has(id)) outro.set(id, i);
+  });
+  return outro;
+}
+
+/** Whether an object is on view at step i. */
+export function onView(intro, outro, id, i) {
+  return intro.has(id) && i >= intro.get(id) && !(outro.has(id) && i >= outro.get(id));
+}
+
 /**
  * Role decides colour (SPEC §Scene object schema): explicit `role`, else
  * free points and joins of free points are given, circles, rays and lines
@@ -58,6 +72,7 @@ function roleOf(def, scene) {
  */
 export function createFigure({ svg, scene, steps, label, onDrag, interactive = true, step: initialStep = 0 }) {
   const intro = introSteps(steps);
+  const outro = outroSteps(steps);
   svg.setAttribute("viewBox", `0 0 ${VIEW.w} ${VIEW.h}`);
   svg.setAttribute("role", "img");
   svg.setAttribute("aria-label", label);
@@ -195,7 +210,7 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
     for (const [id, p] of parts) {
       const def = scene.def(id);
       const v = scene.value(id);
-      let visible = v !== null && step >= intro.get(id);
+      let visible = v !== null && onView(intro, outro, id, step);
       if (visible) visible = draw(def, v, p, G) !== false;
       for (const e of [p.shape, p.label, p.handle]) e?.classList.toggle("is-hidden", !visible);
     }
@@ -225,7 +240,7 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
         p.shape.setAttribute("points", v.P.map((q) => `${q.x},${q.y}`).join(" "));
         return true;
       case "angleMark":
-        p.shape.setAttribute("d", anglePath(v));
+        p.shape.setAttribute("d", anglePath(v, def.radius ?? 24));
         return true;
       case "point": {
         p.shape && setAttrs(p.shape, { cx: v.x, cy: v.y });
@@ -245,8 +260,7 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
     setAttrs(label, { x: P.x + LABEL_OFFSET * ux, y: P.y + LABEL_OFFSET * uy });
   }
 
-  function anglePath({ A, V, B }) {
-    const r = 24;
+  function anglePath({ A, V, B }, r) {
     const a1 = Math.atan2(A.y - V.y, A.x - V.x);
     const a2 = Math.atan2(B.y - V.y, B.x - V.x);
     let sweep = a2 - a1;
