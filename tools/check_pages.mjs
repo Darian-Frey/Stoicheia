@@ -19,6 +19,8 @@ import { fileURLToPath } from "node:url";
 import { arcs, props, built } from "../docs/data/arcs.js";
 import { citationsIn, citationEntries, citationHref, usesOf } from "../docs/js/cite.js";
 import { problems as stampProblems, pages as stampedPages, versionOf } from "./stamp.mjs";
+import { createScene } from "../docs/js/scene.js";
+import { unmetRequirement } from "../docs/js/readout.js";
 
 const DOCS = resolve(fileURLToPath(new URL("../docs/", import.meta.url)));
 const SHOTS = (() => { const i = process.argv.indexOf("--shots"); return i > 0 ? process.argv[i + 1] : null; })();
@@ -167,6 +169,19 @@ async function lastStep() {
 }
 const holds = (s) => /✓ holds/.test(s) && !/✗|not yet supported|DEGENERATE/.test(s);
 
+// What the readout should show for the givens as they now stand in the
+// browser: rebuild the scene in Node at those positions and test the
+// hypotheses. I.6 opens with its hypothesis broken on purpose.
+async function expectedState(data) {
+  const s = createScene(data.objects);
+  for (const o of data.objects.filter((x) => x.free)) {
+    const P = await pointOf(o.id);
+    if (P) s.move(o.id, { x: P[0], y: P[1] });
+  }
+  return unmetRequirement(s, data.requires ?? []) ? "not-given" : "holds";
+}
+const asExpected = (st, exp) => exp === "holds" ? holds(st) : /^NOT AS GIVEN/.test(st);
+
 // Proposition-specific drag checks, keyed by number.
 const SPECIFIC = {
   1: async () => {
@@ -243,6 +258,35 @@ const SPECIFIC = {
     await dragPoint("C", 450, 160);
     check("I.5: C keeps AB = AC as it moves; base angles stay equal", holds(await status()), await status());
   },
+  6: async () => {
+    await go("/prop.html?p=6"); await lastStep();
+    const cells = async () => ev("[...document.querySelectorAll('.readout-value')].map(e => parseFloat(e.textContent))");
+    const c0 = await cells();
+    check("I.6: opens in the supposed case: NOT AS GIVEN, outlined, DBC less than ACB",
+      /^NOT AS GIVEN/.test(await status()) && await ev("document.querySelector('.figure').classList.contains('is-not-given')")
+      && c0[0] > c0[1] && c0[4] < c0[5], `${await status()} ${JSON.stringify(c0)}`);
+    // Drag C to just outside the circle about A through B: it should snap on.
+    const A = await pointOf("A"), B = await pointOf("B"), C = await pointOf("C");
+    const r = Math.hypot(B[0] - A[0], B[1] - A[1]);
+    const d = Math.hypot(C[0] - A[0], C[1] - A[1]);
+    const T = [A[0] + (r + 4) * (C[0] - A[0]) / d, A[1] + (r + 4) * (C[1] - A[1]) / d];
+    await dragPoint("C", ...T);
+    const c1 = await cells();
+    check("I.6: C snaps where the base angles are equal: AB = AC holds, outline clears, D on A",
+      holds(await status()) && !(await ev("document.querySelector('.figure').classList.contains('is-not-given')"))
+      && Math.abs(c1[4] - c1[5]) < 1e-3, `${await status()} ${JSON.stringify(c1)}`);
+    await dragPoint("C", T[0] - 60, T[1] - 40);
+    check("I.6: dragged off again, NOT AS GIVEN returns", /^NOT AS GIVEN/.test(await status()), await status());
+    // Make AC the greater, well away from the circle: D and the triangles go, the note comes.
+    const far = [A[0] + (r + 80) * (C[0] - A[0]) / d, A[1] + (r + 80) * (C[1] - A[1]) / d];
+    await dragPoint("C", ...far);
+    const hidden = await ev("[...document.querySelectorAll('.fig-poly')].every(p => p.classList.contains('is-hidden'))");
+    const dLabel = await ev("[...document.querySelectorAll('.fig-label')].find(t => t.textContent === 'D').classList.contains('is-hidden')");
+    const c2 = await cells();
+    check("I.6: with AC the greater, D and the triangles are not drawn and a note explains",
+      hidden && dLabel && /AC is the greater here/.test(await status()) && /^NOT AS GIVEN/.test(await status())
+      && c2[4] == null && c2[5] == null, `${await status()} ${JSON.stringify(c2)}`); // "—" reads as NaN, returned as null
+  },
 };
 
 // ── Stamps (BUG-005) ─────────────────────────────────────────────────
@@ -306,7 +350,9 @@ for (const n of built) {
     (addedOnPage > 0 && await ev("!document.getElementById('step-added-note').hidden")),
     `${addedOnPage} marked on page, ${addedInData} in data`);
   const finalStatus = await status();
-  check(`${tag}: every claim holds at the final step`, holds(finalStatus), finalStatus);
+  const finalExp = await expectedState(data);
+  check(`${tag}: at the final step every claim holds (or NOT AS GIVEN where the givens break the hypothesis)`,
+    asExpected(finalStatus, finalExp), `${finalExp}: ${finalStatus}`);
   await shot(`p${pad(n)}-final`);
 
   const free = data.objects.filter((o) => o.free);
@@ -319,8 +365,9 @@ for (const n of built) {
     const followed = f.on !== undefined
       ? P && Math.hypot(P[0] - before[0], P[1] - before[1]) > 1
       : P && Math.hypot(P[0] - f.at.x - 25, P[1] - f.at.y - 15) < 2;
-    check(`${tag}: mouse drag moves ${f.id} and claims still hold`,
-      followed && holds(await status()), `${JSON.stringify(P)} ${await status()}`);
+    const exp = await expectedState(data);
+    check(`${tag}: mouse drag moves ${f.id} and the readout stays right`,
+      followed && asExpected(await status(), exp), `${exp}: ${JSON.stringify(P)} ${await status()}`);
   }
   for (let i = 0; i < data.steps.length; i++) {
     await go(`/prop.html?p=${n}`);

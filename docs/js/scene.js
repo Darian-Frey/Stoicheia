@@ -99,6 +99,9 @@ function validate(defs) {
       if (!Number.isFinite(d.at?.x) || !Number.isFinite(d.at?.y)) {
         throw new Error(`${where}: free point needs a finite "at"`);
       }
+      if (d.snapOn !== undefined && seen.get(d.snapOn)?.kind !== "circle") {
+        throw new Error(`${where}: "snapOn" must name a circle declared earlier`);
+      }
       if (d.on !== undefined && !["circle", "segment"].includes(seen.get(d.on)?.kind)) {
         throw new Error(`${where}: "on" must name a circle or segment declared earlier`);
       }

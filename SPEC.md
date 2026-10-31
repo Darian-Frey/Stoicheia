@@ -95,6 +95,10 @@ Values, as returned by the scene: point `{x, y}`; segment, ray, line `{A, B}` (B
 
 A free point may carry `on: <circle or segment id>`, declared earlier, and stays on it. On a circle the scene keeps its direction from the centre (taken from `at` when the scene is built, changed only by dragging the point), so it moves with the centre, and imposes the radius; a drag sets only the direction (I.4's E, I.5's C). On a segment it keeps its fraction of the way along, clamped to the ends; a drag sets the fraction (I.5's F, "taken at random on BD").
 
+`when: {gt: [a, b]}` or `when: {eq: [a, b, …]}` (optional, any object): the object is drawn, and measured in the readout, only while the condition holds. I.6 draws D, DC and its two triangles only while AB is the greater, the case the proof supposes.
+
+`snapOn: <circle id>` (free points only, optional): when the point is dragged within 8 units of that circle it lands exactly on it; it stays free. I.6 opens in the supposed case and lets C snap onto the circle about A through B, where its hypothesis (equal base angles) holds.
+
 `role` (optional) sets the figure colour: `"given"` (`--ink`), `"construction"` (`--teal`, dashed for curves and lines), `"result"` (`--amber`) or, for a polygon, `"ghost"` (amber dashed outline with a faint fill, drawn over the lines: a figure applied to another, as in I.4's superposition). Default: free points and joins of two free points are given; circles, rays and lines are construction; everything else is result. Objects listed in no step's `show` are construction helpers and are never drawn.
 
 `mark: "label"` (points only, optional) draws the letter alone: no dot, no drag handle. It is for *naming points*, letters Heath uses to name a figure (the D in "the circle BCD") that Euclid does not construct. Place them where Heath's figure does; in I.1, D and E are the far intersections of line AB with circles A and B. A naming point whose intersection is empty is hidden, like any other derived object.
@@ -130,7 +134,9 @@ Each step's `text` is Heath's wording for that stage of the construction or proo
 
 `text` may contain `\n` to separate paragraphs, following Heath's own breaks. The card's footer is derived from the citations inline in `text` (first appearance, no repeats); a step marked `given: true` states the hypothesis, relies on nothing, and shows "Given" instead. There is no `cite` field (IMP-006). `short` is the step's name in the transport bar (GIVEN · CIRCLE A · …). `brief` is a one-line header summary (GIVEN / REQUIRED) and, like `note`, is the site's wording, not Heath's. Commentary that is not Heath's (e.g. "A and B may be dragged") does not go in `text`; if wanted it goes in an optional `note` field, rendered visibly apart from the proof text.
 
-`requires` lists hypotheses the givens must satisfy, each a `gt: [segment, segment]` with the text to show. While one fails the readout shows `NOT AS GIVEN · <text>` instead of evaluating claims, since the proposition does not apply, and the figure's frame is outlined dashed amber as for DEGENERATE; DEGENERATE takes precedence.
+`notes: [{when, text}]` (optional) are Stoicheia's own explanatory lines, shown muted under the claims (or under NOT AS GIVEN) while their condition holds; I.6 notes when AC is the greater.
+
+`requires` lists hypotheses the givens must satisfy, each with the text to show: `gt: [a, b]` (a greater than b, as I.3's AB the greater) or `eq: [a, b, …]` (all equal, as I.6's equal base angles), over quantities of one kind. While one fails the readout shows `NOT AS GIVEN · <text>` instead of evaluating claims, since the proposition does not apply, and the figure's frame is outlined dashed amber as for DEGENERATE; DEGENERATE takes precedence.
 
 Measured quantities follow the kind of the object named: a segment gives its length, an `angleMark` its angle (radians internally, degrees to one decimal in the readout, cell name `∠ABC`), a polygon its area (cell name `△ABC`). Lengths and areas display in units of the reference segment (`unit`, default the first measured segment) and its square.
 

@@ -350,6 +350,7 @@ test("createScene rejects malformed data", () => {
     [[A, B, { id: "P", kind: "polygon", by: "polygon", of: ["A", "B"] }], /at least 3/],
     [[A, B, { id: "E", kind: "point", by: "extend", of: ["A", "B"] }], /finite "len"/],
     [[A, { id: "P", kind: "point", free: true, on: "A", at: { x: 1, y: 1 } }], /must name a circle/],
+    [[A, { id: "P", kind: "point", free: true, snapOn: "A", at: { x: 1, y: 1 } }], /"snapOn" must name a circle/],
     [[A, B, { id: "AB", kind: "segment", by: "join", of: ["A", "B"] },
       { id: "P", kind: "polygon", by: "polygon", of: ["A", "B", "AB"] }], /points only/],
   ];

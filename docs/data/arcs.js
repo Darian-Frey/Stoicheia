@@ -5,7 +5,7 @@
 // Greek: problems end Q.E.F., theorems Q.E.D. Add a number to `built`
 // when its data/props/NN.js is complete and checked against the scan.
 
-export const built = [1, 2, 3, 4, 5];
+export const built = [1, 2, 3, 4, 5, 6];
 
 export const arcs = [
   { id: "constructions", label: "Constructions", from: 1, to: 3 },

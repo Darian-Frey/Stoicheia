@@ -6,6 +6,7 @@
 // All styling is by class (instrument.css); no colours here (AV-008).
 
 import { dist } from "./geom.js";
+import { conditionHolds } from "./readout.js";
 
 const SVGNS = "http://www.w3.org/2000/svg";
 const VIEW = { w: 600, h: 470 };
@@ -153,6 +154,18 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
   }
 
   function snap(id, P) {
+    // `snapOn: circle` pulls the point onto that circle when it comes close
+    // (I.6: onto the circle where the base angles are equal).
+    const target = scene.def(id).snapOn;
+    if (target) {
+      const c = scene.value(target);
+      if (c && c.r > 0) {
+        const d = dist(P, c.O);
+        if (d > 0 && Math.abs(d - c.r) < SNAP) {
+          return { x: c.O.x + (c.r * (P.x - c.O.x)) / d, y: c.O.y + (c.r * (P.y - c.O.y)) / d };
+        }
+      }
+    }
     for (const other of scene.ids) {
       if (other === id || !scene.isFree(other)) continue;
       const Q = scene.value(other);
@@ -210,7 +223,8 @@ export function createFigure({ svg, scene, steps, label, onDrag, interactive = t
     for (const [id, p] of parts) {
       const def = scene.def(id);
       const v = scene.value(id);
-      let visible = v !== null && onView(intro, outro, id, step);
+      // `when`: drawn only while its condition holds (I.6: D only while AB is the greater).
+      let visible = v !== null && onView(intro, outro, id, step) && (!def.when || conditionHolds(scene, def.when));
       if (visible) visible = draw(def, v, p, G) !== false;
       for (const e of [p.shape, p.label, p.handle]) e?.classList.toggle("is-hidden", !visible);
     }

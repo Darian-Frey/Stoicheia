@@ -241,6 +241,10 @@ a:hover { color: var(--amber-hi); }
 .readout-line.is-fail,
 .readout-line.is-degenerate { color: var(--amber); }
 
+/* Stoicheia's explanatory lines: muted, no dot. */
+.readout-line.is-note { color: var(--ink-3); }
+.readout-line.is-note::before { content: none; }
+
 /* ── Step card ────────────────────────────────────────────────────── */
 
 .step-card { flex: 1 1 auto; gap: 10px; }
