@@ -20,7 +20,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - Proposition page pipeline: `render.js` (SVG figure, pointer dragging with 8-unit snap), `stepper.js` (step card, citation links, transport), `readout.js` (lengths in reference units, `eq` claims, DEGENERATE state), `prop.js` (bootstrap), `instrument.css` (theme from the mock-up, vendored fonts), `prop.html`, and `data/props/01.js` (Heath's I.1, checked against the scan).
 - `polygon` constructor in `scene.js`; SPEC gains `polygon`, `role`, step `short`, `brief`, paragraph breaks in step text, and drag snapping.
 - README links to the live I.1 page on GitHub Pages.
+- Index page (F-010): `index.html`, `js/index.js`, `data/arcs.js`; 48 cards grouped by arc, built propositions link to their page with a miniature drawn by the shared scene and renderer, unbuilt ones are dimmed placeholders. `render.js` gains a non-interactive mode for miniatures.
+- IMP-007 logged: keep the headless-browser page checks in `tools/`.
 ### Changed
+- F-010 Complete after the author's review of the index.
+- README live link now points at the site root.
+- CLAUDE.md current state corrected (stale skeleton line, test count).
 - Phase 1 Complete. F-002 Complete after the author's phone test; BUG-004 confirmed fixed on device.
 - F-003, F-004, F-005, F-006, F-015 Complete after the author's visual check of I.1. F-002 pending a touch-device test.
 - F-001 Complete: kernel and tests meet the acceptance criteria.

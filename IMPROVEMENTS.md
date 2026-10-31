@@ -33,6 +33,16 @@ Effort vocabulary: trivial | small | medium | large.
 **Trade-offs.** Removes a class of sync errors; costs at-a-glance readability of a step's citations in the data file, and `uses` is no longer a literal the graph page can read without parsing text.
 **Notes.** Best decided while writing `01.js`, when the duplication is concrete.
 
+### IMP-007: Keep the headless-browser page checks in `tools/`
+**Status:** suggested
+**Found:** 2026-10-31 (building the index; the Phase 1 browser check scripts had been lost with the session scratchpad)
+**Location:** `tools/` (new `check_pages.mjs`), CLAUDE.md §Build & test
+**Effort:** small
+**Description.** Page behaviour (stepping, mouse drag past and onto B, DEGENERATE and recovery, touch drag without page scroll, no horizontal scroll at 390 px, the index's 48 cards and I.1 link) has been verified with throwaway scripts that drive the system's Chrome through the DevTools protocol. They lived in a session scratchpad and were lost between sessions, so each check has to be rewritten before it can be rerun. BUG-004 shows the touch check is worth keeping.
+**Proposal.** Commit one `tools/check_pages.mjs` (Node built-ins only: `child_process`, `fetch`, `WebSocket`) that starts a local server and headless Chrome, runs the I.1 and index checks, and exits non-zero on failure. Add it to CLAUDE.md §Build & test, and run it before any phase is marked Complete.
+**Trade-offs.** Needs Chrome installed; not a dependency in the D-001 sense (nothing is installed or vendored, and `docs/` is untouched), but it is the first tool that relies on a program outside Node and Python. Pixel-exact visual checks stay manual.
+**Notes.** Related: F-002, BUG-004, AV-001, AV-003, AV-006.
+
 ## Applied
 
 ### IMP-005: `uses` spelling differs from the citation grammar

@@ -6,10 +6,10 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 
 ## Current state
 
-- `docs/`, `tools/` — directory skeleton created 2026-10-30 (`.gitkeep` placeholders); no code yet.
 - `design/instrument/` — reference mock-up of I.1: `Instrument.dc.html` (exact design values in inline styles) and `instrument-I1.pdf`. Layout reference only; its step text is a paraphrase, not Heath (D-004). `support.js` and `vendor/` are the mock-up's viewer runtime, not part of the site.
 - `docs/js/geom.js` — written 2026-10-30, all SPEC §Kernel functions; `tools/test_geom.mjs` passes (19 tests).
-- `docs/js/scene.js` — written 2026-10-30; `tools/test_scene.mjs` passes (12 tests).
+- `docs/js/scene.js` — written 2026-10-30; `tools/test_scene.mjs` passes (13 tests).
+- `index.html`, `js/index.js`, `data/arcs.js` — written 2026-10-31; 48 cards by arc, I.1 live with a miniature, 47 placeholders. Add each new proposition to `built` in `arcs.js`.
 - `render.js`, `stepper.js`, `readout.js`, `prop.js`, `instrument.css`, `prop.html`, `data/props/01.js` — written 2026-10-30; I.1 renders and drags end to end in headless Chrome (all acceptance checks pass). Author checked visually and on a phone 2026-10-30; F-002–F-006 and F-015 Complete; F-007 partial until Phase 2.
 - Documentation — complete first pass 2026-10-29 (README, FEATURES, ROADMAP, ARCHITECTURE, DECISIONS D-001–D-010 (D-008–D-010 added 2026-10-30), SPEC, ATTACK_VECTORS AV-001–AV-008, BUGS, IMPROVEMENTS, CHANGELOG, LICENSE).
 
@@ -17,7 +17,7 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 
 **Phase 1 — Foundation: Complete (2026-10-30).** I.1 is live at https://darian-frey.github.io/Stoicheia/prop.html?p=1 and passed its acceptance checks, including the author's visual check and a phone touch test (BUG-004 fixed). F-001–F-006 and F-015 Complete; F-007 partial until `defs.html` exists.
 
-**Next: Phase 2 — Constructions and congruence (I.2–I.8)** (ROADMAP). Not started; wait for the author's go-ahead. Each data file's Heath text is transcribed from the scan (Internet Archive `thirteenbookseu02heibgoog`) and checked line by line before it is marked done (AV-004).
+**Phase 2 — Constructions and congruence (I.2–I.8)** (ROADMAP). Started 2026-10-31 with the index (F-010): `index.html`, `js/index.js`, `data/arcs.js`. Next: I.2–I.8 data files, `defs.html` (F-011, completes F-007), prev/next (F-013). Settle IMP-006 before writing `02.js`. Each data file's Heath text is transcribed from the scan (Internet Archive `thirteenbookseu02heibgoog`) and checked line by line before it is marked done (AV-004).
 
 ## Invariants
 

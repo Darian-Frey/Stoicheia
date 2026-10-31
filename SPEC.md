@@ -128,6 +128,8 @@ Citation strings use exactly: `Def. N`, `Post. N`, `C.N. N`, `I.N`, both inline 
 | area | 33–45 | Parallelograms and area |
 | pythagoras | 46–48 | Pythagoras |
 
+`arcs.js` exports `arcs` (the table above as `{id, label, from, to}`), `props` (48 entries `{n, kind, short}`, where `kind` is `problem` or `theorem` and `short` is the site's card label, not Heath's text) and `built` (the proposition numbers whose data files are complete and checked against the scan). A proposition is added to `built` only when its data file is done; the index never links to an unbuilt page.
+
 ## Theme tokens (`instrument.css`)
 
 ```css

@@ -98,7 +98,7 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 **Acceptance:**
 - 48 cards grouped by arc (SPEC.md §Arcs) in the Instrument theme.
 - Each card shows number, short title, problem/theorem badge, and a miniature of the finished figure.
-**Status:** Not started
+**Status:** Complete (2026-10-31)
 
 #### F-011 Foundations page
 **Priority:** Must

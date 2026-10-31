@@ -34,6 +34,8 @@ Data flows one way: the proposition data file is the single source of truth for 
 
 **`readout.js`** — Computes measurements declared in the data file, evaluates claims with the SPEC tolerance, and renders the readout panel. Claims become active at the step that establishes them; earlier steps show measurements only.
 
+**`index.js`** — The index page. Reads `data/arcs.js`, lays out 48 cards by arc, and for each built proposition imports its data file and draws a non-interactive miniature of the finished figure with the same `scene.js` and `render.js` as the proposition page. Unbuilt propositions are dimmed placeholders, not links.
+
 **`prop.js`** — Page bootstrap. Parses `?p=NN`, imports `data/props/NN.js`, builds the scene, mounts the three UI modules, sets prev/next links and the document title.
 
 **`data/props/NN.js`** — One ES module per proposition exporting a single object (schema in SPEC.md §Proposition data). Contains the statement, givens with default positions, construction steps with the objects each introduces and Heath's text for each step (the step texts together are the proof, with citations inline), the claims, and the `uses` list.

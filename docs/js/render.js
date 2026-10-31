@@ -53,8 +53,10 @@ function roleOf(def, scene) {
 /**
  * Mount the figure into `svg`.
  * `onDrag()` is called after each pointer move that changed the scene.
+ * `interactive: false` (index miniatures) draws no drag handles and no grid,
+ * and leaves touch scrolling alone; `step` sets the initial step.
  */
-export function createFigure({ svg, scene, steps, label, onDrag }) {
+export function createFigure({ svg, scene, steps, label, onDrag, interactive = true, step: initialStep = 0 }) {
   const intro = introSteps(steps);
   svg.setAttribute("viewBox", `0 0 ${VIEW.w} ${VIEW.h}`);
   svg.setAttribute("role", "img");
@@ -62,16 +64,18 @@ export function createFigure({ svg, scene, steps, label, onDrag }) {
   svg.classList.add("fig");
   svg.replaceChildren();
 
-  const defs = el("defs", {}, svg);
-  const pattern = el("pattern", {
-    id: "fig-grid", width: 20, height: 20, patternUnits: "userSpaceOnUse",
-  }, defs);
-  el("path", { d: "M20 0H0V20", class: "fig-grid" }, pattern);
-  el("rect", { x: 0, y: 0, width: VIEW.w, height: VIEW.h, fill: "url(#fig-grid)" }, svg);
+  if (interactive) {
+    const defs = el("defs", {}, svg);
+    const pattern = el("pattern", {
+      id: "fig-grid", width: 20, height: 20, patternUnits: "userSpaceOnUse",
+    }, defs);
+    el("path", { d: "M20 0H0V20", class: "fig-grid" }, pattern);
+    el("rect", { x: 0, y: 0, width: VIEW.w, height: VIEW.h, fill: "url(#fig-grid)" }, svg);
 
-  // Fallback for browsers that ignore touch-action on SVG: a non-passive
-  // touchmove that cancels scrolling while a finger is on the figure (BUG-004).
-  svg.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
+    // Fallback for browsers that ignore touch-action on SVG: a non-passive
+    // touchmove that cancels scrolling while a finger is on the figure (BUG-004).
+    svg.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
+  }
 
   const layer = {};
   for (const name of ["fill", "construction", "lines", "points", "labels", "handles"]) {
@@ -105,7 +109,7 @@ export function createFigure({ svg, scene, steps, label, onDrag }) {
         if (!naming) p.shape = el("circle", { r: POINT_R, class: `fig-point ${role}` }, layer.points);
         p.label = el("text", { class: `fig-label ${role}${naming ? " is-naming" : ""}` }, layer.labels);
         p.label.textContent = id;
-        if (def.free) p.handle = makeHandle(id);
+        if (def.free && interactive) p.handle = makeHandle(id);
         break;
       }
     }
@@ -162,7 +166,7 @@ export function createFigure({ svg, scene, steps, label, onDrag }) {
   }
 
   // ── Update ────────────────────────────────────────────────────────
-  let step = 0;
+  let step = initialStep;
 
   function labelCentre() {
     // Centroid of all drawn, non-naming points: labels sit away from it.
