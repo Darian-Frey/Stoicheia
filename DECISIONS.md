@@ -108,7 +108,7 @@ Status vocabulary: Proposed | Accepted | Superseded by D-NNN | Deprecated.
 - **`BUILD.md`** (Tier 2) — there is no build. The one-line local-serve command in README.md is the whole recipe. Revisit if D-001 is reversed.
 - **`CLAIMS.md`** (Tier 3) — the project asserts nothing new about the world; Euclid's claims are Euclid's. Revisit if the project starts publishing its own results (e.g. a formal analysis of the I.1 intersection gap).
 - **`VOCABULARY.md`**, **`SECURITY.md`**, **`BENCHMARKS.md`**, **`CITATION`** — no sibling project, no attack surface beyond a static site, no performance requirement, not intended for citation.
-- **`TESTING.md`** — test strategy is two Node scripts; described in CLAUDE.md §Build & test. Revisit if a browser harness is added.
+- **`TESTING.md`** — test strategy is three Node unit-test scripts and one headless-browser check (`tools/check_pages.mjs`); commands and when to run them are in CLAUDE.md §Build & test, coverage in ARCHITECTURE.md §Cross-cutting concerns. Revisited 2026-10-31 when the browser check was added: exemption kept. Revisit if testing needs more than a page of explanation (e.g. a CI pipeline, test data, or several harnesses).
 - **`CONTRIBUTING.md`** — solo project. Revisit on the first external PR.
 
 All Tier 1 documents are present. `BUGS.md` and `IMPROVEMENTS.md` are adopted (in-repo tracking suits a solo, AI-partnered workflow).

@@ -23,6 +23,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - Index page (F-010): `index.html`, `js/index.js`, `data/arcs.js`; 48 cards grouped by arc, built propositions link to their page with a miniature drawn by the shared scene and renderer, unbuilt ones are dimmed placeholders. `render.js` gains a non-interactive mode for miniatures.
 - `tools/check_pages.mjs`: headless-Chrome checks of the index and every built proposition, Node built-ins only (IMP-007 applied).
 ### Changed
+- D-005: `TESTING.md` exemption revisited after the browser check was added, and kept; new revisit trigger recorded.
 - Citations are written once, inline in Heath's text: step footers and `uses` are derived by new `js/cite.js`; `given: true` replaces `cite: "Given"`; `tools/test_cite.mjs` added (IMP-006 applied).
 - F-010 Complete after the author's review of the index.
 - README live link now points at the site root.
