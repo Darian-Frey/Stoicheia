@@ -110,7 +110,7 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 **Priority:** Should
 **Acceptance:**
 - A page showing which propositions each proposition cites, as a navigable graph.
-- Generated from the `uses` field in the proposition data, not hand-drawn.
+- Generated from the citations in the proposition data (`usesOf` in `js/cite.js`), not hand-drawn.
 **Status:** Not started
 
 #### F-013 Previous/next navigation

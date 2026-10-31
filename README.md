@@ -45,6 +45,7 @@ stoicheia/
 │   │   ├── render.js     # Scene → SVG
 │   │   ├── stepper.js    # Step reveal and transport controls
 │   │   ├── readout.js    # Measurements and QED check
+│   │   ├── cite.js       # Citation grammar; derives footers and dependencies
 │   │   ├── prop.js       # Page bootstrap: loads data, wires modules
 │   │   └── index.js      # Index: 48 cards by arc, miniatures of built props
 │   └── data/

@@ -23,16 +23,6 @@ Effort vocabulary: trivial | small | medium | large.
 **Trade-offs.** OCR cleaning is tedious and itself error-prone, so the corpus needs its own one-off manual check; until then it could give false confidence. Adds a 48-file corpus to the repo that is not served.
 **Notes.** Natural Phase 5 task; would move AV-004 from manual to automated detection.
 
-### IMP-006: Derive `cite` and `uses` from inline citations
-**Status:** suggested
-**Found:** 2026-10-30 (while settling IMP-005)
-**Location:** SPEC.md §Proposition data, ATTACK_VECTORS.md (AV-005), `tools/lint_props.mjs`
-**Effort:** small
-**Description.** Since D-010, each step's `text` carries its citations inline (`[Post. 3]`). The `cite` field repeats them and `uses` repeats their union, so every data file holds each citation up to three times and the linter must check they agree.
-**Proposal.** Drop `cite` (footer built from the inline citations, plus a per-step `given: true` flag for the `Given` label) and derive `uses` as the union across steps. AV-005's linter check reduces to grammar and `I.N` ordering.
-**Trade-offs.** Removes a class of sync errors; costs at-a-glance readability of a step's citations in the data file, and `uses` is no longer a literal the graph page can read without parsing text.
-**Notes.** Best decided while writing `01.js`, when the duplication is concrete.
-
 ### IMP-007: Keep the headless-browser page checks in `tools/`
 **Status:** suggested
 **Found:** 2026-10-31 (building the index; the Phase 1 browser check scripts had been lost with the session scratchpad)
@@ -44,6 +34,17 @@ Effort vocabulary: trivial | small | medium | large.
 **Notes.** Related: F-002, BUG-004, AV-001, AV-003, AV-006.
 
 ## Applied
+
+### IMP-006: Derive `cite` and `uses` from inline citations
+**Status:** applied
+**Found:** 2026-10-30 (while settling IMP-005)
+**Location:** SPEC.md §Proposition data, ATTACK_VECTORS.md (AV-005), `tools/lint_props.mjs`
+**Effort:** small
+**Description.** Since D-010, each step's `text` carries its citations inline (`[Post. 3]`). The `cite` field repeats them and `uses` repeats their union, so every data file holds each citation up to three times and the linter must check they agree.
+**Proposal.** Drop `cite` (footer built from the inline citations, plus a per-step `given: true` flag for the `Given` label) and derive `uses` as the union across steps. AV-005's linter check reduces to grammar and `I.N` ordering.
+**Trade-offs.** Removes a class of sync errors; costs at-a-glance readability of a step's citations in the data file, and `uses` is no longer a literal the graph page can read without parsing text.
+**Notes.** Best decided while writing `01.js`, when the duplication is concrete.
+**Resolution.** 2026-10-31: applied as proposed. New `js/cite.js` (grammar, hrefs, `citationsIn`, `usesOf`); stepper derives footers from step text; `given: true` replaces `cite: "Given"`; `cite` and `uses` removed from `01.js` and SPEC; `usesOf(I.1)` equals the old declared list. `tools/test_cite.mjs` added (8 tests). SPEC, ARCHITECTURE, FEATURES (F-012), ROADMAP (Phase 5) and AV-005 updated.
 
 ### IMP-005: `uses` spelling differs from the citation grammar
 **Status:** applied

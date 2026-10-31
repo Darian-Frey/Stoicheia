@@ -23,6 +23,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - Index page (F-010): `index.html`, `js/index.js`, `data/arcs.js`; 48 cards grouped by arc, built propositions link to their page with a miniature drawn by the shared scene and renderer, unbuilt ones are dimmed placeholders. `render.js` gains a non-interactive mode for miniatures.
 - IMP-007 logged: keep the headless-browser page checks in `tools/`.
 ### Changed
+- Citations are written once, inline in Heath's text: step footers and `uses` are derived by new `js/cite.js`; `given: true` replaces `cite: "Given"`; `tools/test_cite.mjs` added (IMP-006 applied).
 - F-010 Complete after the author's review of the index.
 - README live link now points at the site root.
 - CLAUDE.md current state corrected (stale skeleton line, test count).
@@ -34,6 +35,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - F-007 split across phases: partial in Phase 1 (text and citations), complete in Phase 2 (links resolve) (IMP-003 applied).
 - `uses` spelt with the citation grammar; `Given` admitted as a standalone `cite` label (IMP-005 applied).
 ### Removed
+- `cite` and `uses` fields from the proposition schema (IMP-006).
 - `proof` field from the proposition schema (D-010).
 ### Fixed
 - Touch-dragging a point no longer scrolls the page: `touch-action: none` moved to the figure's `<svg>`, with a non-passive `touchmove` fallback (BUG-004).

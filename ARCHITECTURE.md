@@ -7,7 +7,7 @@ Descriptive only: this is how Stoicheia is structured. Rationale lives in DECISI
 ```
  data/props/NN.js ──► scene.js ──► render.js ──► <svg>
  (givens, steps,       │  (object graph,  (draw objects,
-  claims, uses)        │   recompute)      drag handles)
+  claims)              │   recompute)      drag handles)
                        │
                        ├──► readout.js ──► readout panel
                        │    (measure, evaluate claims)
@@ -36,9 +36,11 @@ Data flows one way: the proposition data file is the single source of truth for 
 
 **`index.js`** — The index page. Reads `data/arcs.js`, lays out 48 cards by arc, and for each built proposition imports its data file and draws a non-interactive miniature of the finished figure with the same `scene.js` and `render.js` as the proposition page. Unbuilt propositions are dimmed placeholders, not links.
 
+**`cite.js`** — Citation grammar, link targets, and derivation of a step's footer and a proposition's dependencies from the bracketed citations in Heath's text. Pure; shared by the stepper, the graph page and the linter.
+
 **`prop.js`** — Page bootstrap. Parses `?p=NN`, imports `data/props/NN.js`, builds the scene, mounts the three UI modules, sets prev/next links and the document title.
 
-**`data/props/NN.js`** — One ES module per proposition exporting a single object (schema in SPEC.md §Proposition data). Contains the statement, givens with default positions, construction steps with the objects each introduces and Heath's text for each step (the step texts together are the proof, with citations inline), the claims, and the `uses` list.
+**`data/props/NN.js`** — One ES module per proposition exporting a single object (schema in SPEC.md §Proposition data). Contains the statement, givens with default positions, construction steps with the objects each introduces and Heath's text for each step (the step texts together are the proof, with citations inline), and the claims. Its dependencies are derived from the citations in the step texts (`js/cite.js`), not declared.
 
 **`data/arcs.js`, `data/foundations.js`** — Static tables for the index and the definitions page.
 

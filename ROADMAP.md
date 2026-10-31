@@ -53,7 +53,7 @@ Phases follow the natural arcs of Book I. Phases are append-only; mark Complete 
 **Features delivered:** F-008 complete, F-012
 **Deliverables:**
 - [ ] Data files 46–48
-- [ ] `docs/graph.html` generated from `uses` fields
+- [ ] `docs/graph.html` generated from the citations in each data file (`usesOf`)
 - [ ] `tools/check_xrefs.py` and `tools/lint_props.mjs`
 - [ ] README status → Complete per the lifecycle checklist
 **Acceptance:** All 48 pass; graph page shows I.47 depending on I.4, I.41, I.46 (and transitively the rest); every Must feature Complete or Withdrawn.

@@ -34,7 +34,7 @@ export default {
       short: "Given",
       text: "Let AB be the given finite straight line.\n" +
         "Thus it is required to construct an equilateral triangle on the straight line AB.",
-      cite: "Given",
+      given: true,
       note: "A and B may be dragged; the construction follows.",
       show: ["A", "B", "AB"],
     },
@@ -42,14 +42,12 @@ export default {
       title: "Circle with centre A",
       short: "Circle A",
       text: "With centre A and distance AB let the circle BCD be described; [Post. 3]",
-      cite: "Post. 3",
       show: ["circA", "D"],
     },
     {
       title: "Circle with centre B",
       short: "Circle B",
       text: "again, with centre B and distance BA let the circle ACE be described; [Post. 3]",
-      cite: "Post. 3",
       show: ["circB", "E"],
     },
     {
@@ -57,7 +55,6 @@ export default {
       short: "Join",
       text: "and from the point C, in which the circles cut one another, to the points A, B " +
         "let the straight lines CA, CB be joined. [Post. 1]",
-      cite: "Post. 1",
       show: ["C", "AC", "BC", "ABC"],
     },
     {
@@ -72,7 +69,6 @@ export default {
         "Therefore the triangle ABC is equilateral; and it has been constructed on the given " +
         "finite straight line AB.\n" +
         "(Being) what it was required to do.",
-      cite: "Def. 15, C.N. 1",
       show: [],
     },
   ],
@@ -82,6 +78,5 @@ export default {
   claims: [
     { label: "EQUILATERAL", eq: ["AB", "AC", "BC"], from: 4 },
   ],
-  uses: ["Def. 15", "Post. 1", "Post. 3", "C.N. 1"],
   arc: "constructions",
 };

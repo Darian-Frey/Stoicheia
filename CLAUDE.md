@@ -24,7 +24,7 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 - Declaration order is dependency order in every data file.
 - `geom.js` is pure and never throws.
 - Proof text is Heath's, transcribed, with citations inserted; never paraphrased.
-- Every inference cites `Def. N` / `Post. N` / `C.N. N` / `I.N`.
+- Every inference cites `Def. N` / `Post. N` / `C.N. N` / `I.N`, inline in Heath's text; footers and dependencies are derived from it, never declared.
 - All colour and type lives in `instrument.css`; no hex in markup or JS.
 - Nothing in `docs/` requires a build step to run.
 
@@ -34,6 +34,7 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 python3 -m http.server -d docs 8000      # serve locally
 node tools/test_geom.mjs                 # kernel unit tests (Phase 1)
 node tools/test_scene.mjs                # scene recompute, branch picks, AV-001/AV-003 drags
+node tools/test_cite.mjs                 # citation grammar, derived footers and uses
 node tools/lint_props.mjs                # schema, citations, drag-grid sweep (Phase 2+)
 python3 tools/check_xrefs.py             # doc cross-reference check (Phase 5)
 ```

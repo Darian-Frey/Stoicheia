@@ -95,26 +95,25 @@ export default {
   brief: { given: "finite straight line AB", required: "equilateral triangle on AB" },  // header summary; not Heath's text
   objects: [ /* scene object schema, dependency order */ ],
   steps: [
-    { title: "The given line", short: "Given", text: "…", cite: "Given", note: "…", show: ["A","B","AB"] },
-    { title: "Circle with centre A", short: "Circle A", text: "…", cite: "Post. 3", show: ["circA", "D"] },
+    { title: "The given line", short: "Given", text: "…", given: true, note: "…", show: ["A","B","AB"] },
+    { title: "Circle with centre A", short: "Circle A", text: "… described; [Post. 3]", show: ["circA", "D"] },
     …
-    { title: "Q.E.F.", text: "…", cite: "Def. 15, C.N. 1", show: [] }
+    { title: "Q.E.F.", text: "… [Def. 15] … [C.N. 1] …", show: [] }
   ],
   measure: [ "AB", "AC", "BC" ],                 // lengths shown in readout
   unit: "AB",                                    // optional; display unit, defaults to measure[0]
   claims: [
     { label: "EQUILATERAL", eq: ["AB","AC","BC"], from: 3 }   // active from step index 3
   ],
-  uses: ["Def. 15", "Post. 1", "Post. 3", "C.N. 1"],  // foundations and props ("I.4"), spelt as citations
   arc: "constructions"
 };
 ```
 
-Each step's `text` is Heath's wording for that stage of the construction or proof, transcribed, with citations inserted inline in brackets (`[Post. 3]`) and nothing else changed (D-004). Read in order, the step texts are the complete proof; there is no separate proof field or panel (D-010). `text` may contain `\n` to separate paragraphs, following Heath's own breaks. `cite` is the card's footer line and lists exactly the citations that appear inline in `text`. `short` is the step's name in the transport bar (GIVEN · CIRCLE A · …). `brief` is a one-line header summary (GIVEN / REQUIRED) and, like `note`, is the site's wording, not Heath's. Commentary that is not Heath's (e.g. "A and B may be dragged") does not go in `text`; if wanted it goes in an optional `note` field, rendered visibly apart from the proof text.
+Each step's `text` is Heath's wording for that stage of the construction or proof, transcribed, with citations inserted inline in brackets (`[Post. 3]`) and nothing else changed (D-004). Read in order, the step texts are the complete proof; there is no separate proof field or panel (D-010). `text` may contain `\n` to separate paragraphs, following Heath's own breaks. The card's footer is derived from the citations inline in `text` (first appearance, no repeats); a step marked `given: true` states the hypothesis, relies on nothing, and shows "Given" instead. There is no `cite` field (IMP-006). `short` is the step's name in the transport bar (GIVEN · CIRCLE A · …). `brief` is a one-line header summary (GIVEN / REQUIRED) and, like `note`, is the site's wording, not Heath's. Commentary that is not Heath's (e.g. "A and B may be dragged") does not go in `text`; if wanted it goes in an optional `note` field, rendered visibly apart from the proof text.
 
 Claim forms: `eq` (all equal; residual is the worst pair), `gt: [a, b]`, `parallel: [seg, seg]`, `on: [point, line]`, `perp: [seg, seg]`, `areaEq: [poly, poly]`, `angleEq: [[A,V,B],[C,W,D]]`, `sum: {parts:[…], whole:…}`.
 
-Citation strings use exactly: `Def. N`, `Post. N`, `C.N. N`, `I.N`, both inline in step text and in `cite` and `uses`. The linter rejects anything else, with one exception: `cite: "Given"` marks a step that states the hypothesis and relies on nothing. `Given` must stand alone (never in a list), renders as plain unlinked text, and is excluded from the `uses` check.
+Citations are written only inline in step text, in brackets, comma-separated when several apply: `[Def. 15, C.N. 1]`. Each must be exactly `Def. N`, `Post. N`, `C.N. N` or `I.N`; the linter rejects anything else. A proposition's dependencies (`uses`) are not declared: `usesOf(data)` in `js/cite.js` derives them as every citation in its steps, in canonical order (Def., Post., C.N., then propositions, each by number). The dependency graph (F-012) and the linter use the same function, so the text, the footers and the graph cannot disagree.
 
 ## Arcs (`data/arcs.js`)
 

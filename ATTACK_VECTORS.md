@@ -45,8 +45,8 @@ Severity: Critical (must hold) | Major (regression on release blocks) | Minor (t
 
 ### AV-005 Wrong or missing citation
 **Severity:** Major
-**Description.** A proof step cites `Post. 2` where Heath's marginal note says `Post. 1`, or cites nothing. The dependency graph (F-012) is generated from `uses`, so a wrong citation also corrupts the graph.
-**Detection.** Linter: every `cite` string matches the SPEC grammar (or is exactly `Given`, which is excluded from the `uses` comparison), every cited `I.N` has N < current proposition, and the set of citations in step texts and `cite` fields equals the `uses` list. Correctness of the citation itself is checked manually alongside AV-004.
+**Description.** A proof step cites `Post. 2` where Heath's marginal note says `Post. 1`, or cites nothing. The dependency graph (F-012) is derived from the same citations, so a wrong citation also corrupts the graph.
+**Detection.** Linter: every bracketed citation in step text matches the SPEC grammar, every cited `I.N` has N < current proposition, and only the opening step may be `given: true` (with no citations). Footers and `uses` are derived from the text, so they cannot drift from it (IMP-006). `tools/test_cite.mjs` checks these rules for I.1 until the linter exists. Correctness of the citation itself is checked manually alongside AV-004.
 **Related decisions.** D-003, D-004.
 **History.** Identified 2026-10-29.
 
