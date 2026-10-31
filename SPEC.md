@@ -117,7 +117,7 @@ Each step's `text` is Heath's wording for that stage of the construction or proo
 
 Claim forms: `eq` (all equal; residual is the worst pair), `gt: [a, b]`, `parallel: [seg, seg]`, `on: [point, line]`, `perp: [seg, seg]`, `areaEq: [poly, poly]`, `angleEq: [[A,V,B],[C,W,D]]`, `sum: {parts:[…], whole:…}`.
 
-Citations are written only inline in step text, in brackets, comma-separated when several apply: `[Def. 15, C.N. 1]`. Each must be exactly `Def. N`, `Post. N`, `C.N. N` or `I.N`; the linter rejects anything else. A proposition's dependencies (`uses`) are not declared: `usesOf(data)` in `js/cite.js` derives them as every citation in its steps, in canonical order (Def., Post., C.N., then propositions, each by number). The dependency graph (F-012) and the linter use the same function, so the text, the footers and the graph cannot disagree.
+Citations are written only inline in step text, comma-separated when several apply. Heath's own are in square brackets, `[Def. 15, C.N. 1]`; citations Stoicheia adds where Heath leaves an inference implicit are in braces, `{Def. 15}`, and render muted with a tooltip, in the text and the footer, plus a note under the footer (D-011). A citation given by Heath anywhere in a step's text counts as his in that step's footer. Each must be exactly `Def. N`, `Post. N`, `C.N. N` or `I.N`; the linter rejects anything else. A proposition's dependencies (`uses`) are not declared: `usesOf(data)` in `js/cite.js` derives them as every citation in its steps, in canonical order (Def., Post., C.N., then propositions, each by number). The dependency graph (F-012) and the linter use the same function, so the text, the footers and the graph cannot disagree.
 
 ## Arcs (`data/arcs.js`)
 

@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  isCitation, citationHref, splitCitations, citationsIn, compareCitations, usesOf,
+  isCitation, citationHref, splitCitations, citationEntries, citationsIn, compareCitations, usesOf,
 } from "../docs/js/cite.js";
 import I1 from "../docs/data/props/01.js";
 
@@ -23,11 +23,19 @@ test("hrefs", () => {
   assert.equal(citationHref("Given"), null);
 });
 
-test("splitCitations keeps text and groups in order", () => {
+test("splitCitations keeps text and groups in order, Heath's and added", () => {
   assert.deepEqual(splitCitations("a [Post. 1] b [Def. 15, C.N. 1]"),
-    ["a ", ["Post. 1"], " b ", ["Def. 15", "C.N. 1"]]);
+    ["a ", { cites: ["Post. 1"], added: false }, " b ", { cites: ["Def. 15", "C.N. 1"], added: false }]);
   assert.deepEqual(splitCitations("no citations"), ["no citations"]);
-  assert.deepEqual(splitCitations("[I.4]"), [["I.4"]]);
+  assert.deepEqual(splitCitations("[I.4]"), [{ cites: ["I.4"], added: false }]);
+  assert.deepEqual(splitCitations("x {Def. 20} y"),
+    ["x ", { cites: ["Def. 20"], added: true }, " y"]);
+});
+
+test("citationEntries: added unless Heath also gives it in the same text (D-011)", () => {
+  assert.deepEqual(citationEntries("a {Def. 15} b [C.N. 3] c {Def. 15}"),
+    [{ cite: "Def. 15", added: true }, { cite: "C.N. 3", added: false }]);
+  assert.deepEqual(citationEntries("a {Def. 15} b [Def. 15]"), [{ cite: "Def. 15", added: false }]);
 });
 
 test("citationsIn: first appearance, no repeats", () => {
@@ -41,8 +49,10 @@ test("canonical order: Def., Post., C.N., I., each by number", () => {
     ["Def. 2", "Def. 15", "Post. 1", "Post. 3", "C.N. 1", "I.2", "I.4", "I.10"]);
 });
 
-test("I.1: derived uses equals the list it used to declare", () => {
-  assert.deepEqual(usesOf(I1), ["Def. 15", "Post. 1", "Post. 3", "C.N. 1"]);
+test("I.1: derived uses is Heath's citations plus the added Def. 20", () => {
+  assert.deepEqual(usesOf(I1), ["Def. 15", "Def. 20", "Post. 1", "Post. 3", "C.N. 1"]);
+  const added = I1.steps.flatMap((s) => citationEntries(s.text)).filter((e) => e.added).map((e) => e.cite);
+  assert.deepEqual(added, ["Def. 20"]);
 });
 
 test("I.1: every citation is in the grammar and cites no later proposition", () => {

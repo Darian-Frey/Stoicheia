@@ -223,3 +223,26 @@ All Tier 1 documents are present. `BUGS.md` and `IMPROVEMENTS.md` are adopted (i
 
 **Reversal conditions.** Revisit if readers need the whole proof visible at once (e.g. for printing or the long propositions), in which case a read-only "full text" view assembled from the step texts is the first option to try.
 
+### D-011 Citations Heath leaves implicit are added, marked as Stoicheia's
+**Decided:** 2026-10-31
+**Recorded:** 2026-10-31
+**Status:** Accepted
+**Authors:** Shane Hartley (with Claude)
+**Related:** D-004, F-007, F-012, AV-004, AV-005, ARCHITECTURE.md invariant 4, SPEC.md §Proposition data
+
+**Context.** ARCHITECTURE invariant 4 and F-007 require every inference to cite its justification, and the dependency graph and "Cited in" lists are derived from citations. Heath prints his own bracketed citations but omits them where he judges a step obvious or already cited: in I.2, "BC is equal to BG" and "DL is equal to DG" rest on Def. 15 uncited, though I.1 cites it; "ABC is equilateral" (I.1) rests on Def. 20 uncited. The omissions grow as Book I proceeds. D-004 permits inserted citations but says nothing on how to show them.
+
+**Options.**
+- **A. Heath's citations only, as printed.** Most faithful and simplest to check against the scan, but breaks invariant 4 and makes the graph undercount dependencies. Rejected.
+- **B. Add missing citations, visibly marked as Stoicheia's.** Written `{Def. 15}` in data (Heath's stay `[Def. 15]`); rendered muted, with a tooltip and a note, in text and footer; counted in dependencies. Chosen.
+- **C. Add them indistinguishably from Heath's.** Rejected: readers could not tell Heath's apparatus from ours, against the purpose of D-004.
+
+**Decision.** Option B. A citation is added only where a step clearly relies on a definition, postulate, common notion or earlier proposition that Heath leaves uncited; Heath's own citations are never changed, removed or reordered. Each data file's header lists its added citations.
+
+**Consequences.**
+- Invariant 4 and F-007 hold; the dependency graph and "Cited in" lists are complete.
+- Every added citation is a judgement and can be wrong (AV-005); it is checked with the text against the scan.
+- A future diff against a Heath corpus (IMP-001) strips `{…}` and compares the rest.
+
+**Reversal conditions.** Revisit if added citations become contentious or numerous enough to crowd the text, in which case they could move to a separate per-step apparatus.
+

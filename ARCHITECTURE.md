@@ -53,7 +53,7 @@ Data flows one way: the proposition data file is the single source of truth for 
 1. **Declaration order is dependency order.** A proposition's object list never references a later object. The linter enforces this.
 2. **The kernel never throws.** Degenerate geometry yields empty intersections or a flagged result; the UI decides how to show it.
 3. **Proof text is Heath's.** Wording changes only to add citations and modern punctuation; nothing is paraphrased.
-4. **Every inference cites.** No step in a proof may rely on something that is not a Definition, Postulate, Common Notion, or earlier proposition, and the citation must be present in the data.
+4. **Every inference cites.** No step in a proof may rely on something that is not a Definition, Postulate, Common Notion, or earlier proposition, and the citation must be present in the data. Where Heath leaves a citation implicit, Stoicheia adds it in braces, `{Def. 15}`, shown as its own and never confused with Heath's (D-011).
 5. **All colour and type lives in `instrument.css`.** Page markup and SVG use class names and CSS custom properties only.
 6. **No build step.** Anything served from `docs/` is committed as-is and runs in a browser unmodified.
 

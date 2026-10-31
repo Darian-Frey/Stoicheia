@@ -2,7 +2,9 @@
 //
 // Heath's text, as transcribed, is the single source of citations
 // (IMP-006): a step's footer and a proposition's dependency list (`uses`)
-// are both derived from the bracketed citations inline in its steps.
+// are both derived from the citations inline in its steps. Heath's own are
+// in square brackets, [Def. 15]; citations Stoicheia adds where Heath
+// leaves an inference implicit are in braces, {Def. 15} (D-011).
 // Pure; no DOM.
 
 const FORMS = [
@@ -31,28 +33,44 @@ export function citationHref(cite) {
 }
 
 /**
- * Split text into plain strings and bracketed citation groups:
- * "a [Post. 1] b" → ["a ", ["Post. 1"], " b"].
+ * Split text into plain strings and citation groups:
+ * "a [Post. 1] b {Def. 15}" →
+ *   ["a ", {cites: ["Post. 1"], added: false}, " b ", {cites: ["Def. 15"], added: true}].
  */
 export function splitCitations(text) {
   const out = [];
   let last = 0;
-  for (const m of text.matchAll(/\[([^\]]+)\]/g)) {
+  for (const m of text.matchAll(/\[([^\]]+)\]|\{([^}]+)\}/g)) {
     if (m.index > last) out.push(text.slice(last, m.index));
-    out.push(m[1].split(/,\s*/));
+    const added = m[2] !== undefined;
+    out.push({ cites: (added ? m[2] : m[1]).split(/,\s*/), added });
     last = m.index + m[0].length;
   }
   if (last < text.length) out.push(text.slice(last));
   return out;
 }
 
-/** Citations in text, in order of first appearance, without repeats. */
-export function citationsIn(text) {
-  const seen = [];
+/**
+ * Citations in text as {cite, added}, in order of first appearance,
+ * without repeats; a citation Heath gives anywhere in the text counts as
+ * his, even if Stoicheia also adds it elsewhere.
+ */
+export function citationEntries(text) {
+  const out = [];
   for (const part of splitCitations(text)) {
-    if (Array.isArray(part)) for (const c of part) if (!seen.includes(c)) seen.push(c);
+    if (typeof part === "string") continue;
+    for (const cite of part.cites) {
+      const seen = out.find((e) => e.cite === cite);
+      if (!seen) out.push({ cite, added: part.added });
+      else if (!part.added) seen.added = false;
+    }
   }
-  return seen;
+  return out;
+}
+
+/** Citations in text, Heath's and added, in order of first appearance, without repeats. */
+export function citationsIn(text) {
+  return citationEntries(text).map((e) => e.cite);
 }
 
 /** Canonical order: Def., Post., C.N., then propositions, each by number. */

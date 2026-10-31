@@ -17,7 +17,7 @@ import { join, extname, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { arcs, props, built } from "../docs/data/arcs.js";
-import { citationsIn, citationHref, usesOf } from "../docs/js/cite.js";
+import { citationsIn, citationEntries, citationHref, usesOf } from "../docs/js/cite.js";
 import { problems as stampProblems, pages as stampedPages, versionOf } from "./stamp.mjs";
 
 const DOCS = resolve(fileURLToPath(new URL("../docs/", import.meta.url)));
@@ -239,10 +239,20 @@ for (const n of built) {
     if (i) { await ev("document.getElementById('step-next').click()"); await wait(40); }
     footers.push(await ev("document.getElementById('step-cite').textContent"));
   }
-  const expected = data.steps.map((s) => s.given ? "Given" : (() => {
-    const c = citationsIn(s.text); return c.length ? `[${c.join(", ")}]` : "";
-  })());
+  const expected = data.steps.map((s) => {
+    const e = citationEntries(s.text);
+    const heath = e.filter((x) => !x.added).map((x) => x.cite);
+    const added = e.filter((x) => x.added).map((x) => x.cite);
+    return [s.given ? "Given" : "", heath.length ? `[${heath.join(", ")}]` : "", added.length ? `[${added.join(", ")}]` : ""]
+      .filter(Boolean).join(" ");
+  });
   check(`${tag}: step footers match the citations in the text`, JSON.stringify(footers) === JSON.stringify(expected), JSON.stringify(footers));
+  const addedOnPage = await ev("document.querySelectorAll('.step-text .cite.is-added').length");
+  const addedInData = citationEntries(data.steps.at(-1).text).filter((x) => x.added).length;
+  check(`${tag}: added citations are marked as Stoicheia's, with the explanatory note (D-011)`,
+    (addedInData === 0 && addedOnPage === 0) ||
+    (addedOnPage > 0 && await ev("!document.getElementById('step-added-note').hidden")),
+    `${addedOnPage} marked on page, ${addedInData} in data`);
   const finalStatus = await status();
   check(`${tag}: every claim holds at the final step`, holds(finalStatus), finalStatus);
   await shot(`p${pad(n)}-final`);

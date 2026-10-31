@@ -4,7 +4,8 @@
 // thirteenbookseu02heibgoog, leaf 264, on 2026-10-31 (by Claude; author's
 // own check pending, AV-004). Edits: citations respelt to the SPEC grammar
 // ("I. 1" → "I.1"); spaces before ";" dropped; margin line numbers
-// omitted (D-004).
+// omitted (D-004). Added citations (D-011), in braces: {Def. 15} for "BC is
+// equal to BG" and "DL is equal to DG"; {Def. 20} for "DA is equal to DB".
 
 export default {
   n: 2,
@@ -94,9 +95,9 @@ export default {
     {
       title: "Q.E.F.",
       short: "Q.E.F.",
-      text: "Then, since the point B is the centre of the circle CGH, BC is equal to BG.\n" +
-        "Again, since the point D is the centre of the circle GKL, DL is equal to DG.\n" +
-        "And in these DA is equal to DB; therefore the remainder AL is equal to the remainder " +
+      text: "Then, since the point B is the centre of the circle CGH, BC is equal to BG. {Def. 15}\n" +
+        "Again, since the point D is the centre of the circle GKL, DL is equal to DG. {Def. 15}\n" +
+        "And in these DA is equal to DB; {Def. 20} therefore the remainder AL is equal to the remainder " +
         "BG. [C.N. 3]\n" +
         "But BC was also proved equal to BG; therefore each of the straight lines AL, BC is " +
         "equal to BG.\n" +

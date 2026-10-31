@@ -108,7 +108,7 @@ async function main() {
     steps: data.steps,
     els: {
       label: $("step-label"), title: $("step-title"), text: $("step-text"),
-      note: $("step-note"), cite: $("step-cite"),
+      note: $("step-note"), cite: $("step-cite"), addedNote: $("step-added-note"),
       prev: $("step-prev"), next: $("step-next"),
       pips: $("step-pips"), names: $("step-names"),
     },

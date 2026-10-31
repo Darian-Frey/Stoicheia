@@ -6,7 +6,7 @@
 // The footer is derived from the citations in the step's own text
 // (IMP-006); a step with `given: true` shows "Given" instead.
 
-import { citationHref, citationsIn, splitCitations } from "./cite.js";
+import { citationHref, citationEntries, splitCitations } from "./cite.js";
 
 function h(tag, cls, text) {
   const e = document.createElement(tag);
@@ -32,7 +32,17 @@ function appendCitations(parent, list) {
   parent.append("]");
 }
 
-/** Render step text: "\n" separates paragraphs; [..] are citations. */
+const ADDED_TITLE = "Citation added by Stoicheia; Heath leaves this inference implicit";
+
+/** A citation group: Heath's plain, Stoicheia's added ones marked (D-011). */
+function citeGroup(list, added) {
+  const span = h("span", added ? "cite is-added" : "cite");
+  if (added) span.title = ADDED_TITLE;
+  appendCitations(span, list);
+  return span;
+}
+
+/** Render step text: "\n" separates paragraphs; [..] and {..} are citations. */
 function renderText(container, text) {
   container.replaceChildren();
   for (const para of text.split("\n")) {
@@ -41,9 +51,7 @@ function renderText(container, text) {
       if (typeof part === "string") {
         p.append(part);
       } else {
-        const span = h("span", "cite");
-        appendCitations(span, part);
-        p.append(span);
+        p.append(citeGroup(part.cites, part.added));
       }
     }
     container.append(p);
@@ -82,9 +90,14 @@ export function createStepper({ steps, els, onChange }) {
     renderText(els.text, s.text);
     els.note.textContent = s.note ?? "";
     els.cite.replaceChildren();
-    const cites = citationsIn(s.text);
+    const entries = citationEntries(s.text);
+    const heath = entries.filter((e) => !e.added).map((e) => e.cite);
+    const added = entries.filter((e) => e.added).map((e) => e.cite);
     if (s.given) els.cite.append(h("span", "given", "Given"));
-    else if (cites.length) appendCitations(els.cite, cites);
+    if (heath.length) els.cite.append(citeGroup(heath, false));
+    if (heath.length && added.length) els.cite.append(" ");
+    if (added.length) els.cite.append(citeGroup(added, true));
+    els.addedNote?.toggleAttribute("hidden", added.length === 0);
     pips.forEach((b, i) => {
       b.classList.toggle("is-done", i <= current);
       if (i === current) b.setAttribute("aria-current", "step");

@@ -72,7 +72,7 @@ The author, studying Euclidean geometry as a bridge to mechanics, and any reader
 #### F-007 Proof text with citations
 **Priority:** Must
 **Acceptance:**
-- Proof text follows Heath; every inference cites its justification in `[Post. N]`, `[Def. N]`, `[C.N. N]` or `[I.N]` form.
+- Proof text follows Heath; every inference cites its justification in `[Post. N]`, `[Def. N]`, `[C.N. N]` or `[I.N]` form. Citations Heath leaves implicit are added and visibly marked as Stoicheia's (D-011).
 - Citations are links to `defs.html#…` or `prop.html?p=N`.
 **Status:** Complete (2026-10-31)
 

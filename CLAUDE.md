@@ -12,7 +12,7 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 - `index.html`, `js/index.js`, `data/arcs.js` — written 2026-10-31; 48 cards by arc, I.1 live with a miniature, 47 placeholders. Add each new proposition to `built` in `arcs.js`.
 - `defs.html`, `js/defs.js`, `data/foundations.js` — written 2026-10-31; Heath's Defs 1–23, Posts 1–5, C.N. 1–5 from pp. 153–155, checked against scan leaves 173–175 (author's check pending). Every citation in built propositions resolves (`check_pages.mjs`).
 - `render.js`, `stepper.js`, `readout.js`, `prop.js`, `instrument.css`, `prop.html`, `data/props/01.js` — written 2026-10-30; I.1 renders and drags end to end in headless Chrome (all acceptance checks pass). Author checked visually and on a phone 2026-10-30; F-002–F-006 and F-015 Complete.
-- Documentation — complete first pass 2026-10-29 (README, FEATURES, ROADMAP, ARCHITECTURE, DECISIONS D-001–D-010 (D-008–D-010 added 2026-10-30), SPEC, ATTACK_VECTORS AV-001–AV-008, BUGS, IMPROVEMENTS, CHANGELOG, LICENSE).
+- Documentation — complete first pass 2026-10-29 (README, FEATURES, ROADMAP, ARCHITECTURE, DECISIONS D-001–D-011 (D-008–D-010 added 2026-10-30, D-011 2026-10-31), SPEC, ATTACK_VECTORS AV-001–AV-008, BUGS, IMPROVEMENTS, CHANGELOG, LICENSE).
 
 ## Active task
 
@@ -25,7 +25,7 @@ Stoicheia: Euclid's *Elements* Book I (48 propositions) as interactive construct
 - Declaration order is dependency order in every data file.
 - `geom.js` is pure and never throws.
 - Proof text is Heath's, transcribed, with citations inserted; never paraphrased.
-- Every inference cites `Def. N` / `Post. N` / `C.N. N` / `I.N`, inline in Heath's text; footers and dependencies are derived from it, never declared.
+- Every inference cites `Def. N` / `Post. N` / `C.N. N` / `I.N`, inline in Heath's text; footers and dependencies are derived from it, never declared. Heath's citations are `[…]` and never altered; where he leaves one implicit, add it as `{…}` and list it in the data file's header (D-011).
 - All colour and type lives in `instrument.css`; no hex in markup or JS.
 - Nothing in `docs/` requires a build step to run.
 

@@ -250,6 +250,14 @@ a:hover { color: var(--amber-hi); }
 .step-text p:last-child { margin-bottom: 0; }
 .step-text .cite { white-space: nowrap; }
 
+/* Citations Stoicheia adds where Heath leaves them implicit (D-011). */
+.cite.is-added,
+.cite.is-added a { color: var(--ink-3); }
+.cite.is-added a { text-decoration: underline dotted; text-underline-offset: 3px; }
+.cite.is-added a:hover { color: var(--amber-hi); }
+.step-added-note { font-size: 11px; color: var(--ink-3); }
+.step-added-note[hidden] { display: none; }
+
 .step-note {
   font-size: 12px;
   line-height: 1.5;

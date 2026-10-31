@@ -4,6 +4,7 @@
 // thirteenbookseu02heibgoog, leaves 261–262, on 2026-10-30 (by Claude;
 // author's own check pending, AV-004). Edits: citations respelt to the
 // SPEC grammar ("C. N. 1" → "C.N. 1"); space before ";" dropped (D-004).
+// Added citations (D-011), in braces: {Def. 20} for "ABC is equilateral".
 
 export default {
   n: 1,
@@ -66,7 +67,7 @@ export default {
         "And things which are equal to the same thing are also equal to one another; [C.N. 1] " +
         "therefore CA is also equal to CB.\n" +
         "Therefore the three straight lines CA, AB, BC are equal to one another.\n" +
-        "Therefore the triangle ABC is equilateral; and it has been constructed on the given " +
+        "Therefore the triangle ABC is equilateral; {Def. 20} and it has been constructed on the given " +
         "finite straight line AB.\n" +
         "(Being) what it was required to do.",
       show: [],
