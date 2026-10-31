@@ -9,7 +9,7 @@
 // `from` step; earlier steps show measurements only. Wording is "holds",
 // never "proved" (D-006).
 
-import { dist, angle } from "./geom.js";
+import { dist, angle, signedArea } from "./geom.js";
 
 /** Claim tolerance τ (SPEC §Tolerance). */
 export const TAU = 1e-6;
@@ -48,7 +48,7 @@ export function quantity(scene, id) {
  * polygons) that should all be equal. Returns { ok, residual }, null when
  * an input does not exist (degenerate), or { unsupported: true }.
  */
-export function evaluateClaim(scene, claim) {
+export function evaluateClaim(scene, claim, scale) {
   if (claim.eq) {
     const qs = claim.eq.map((id) => quantity(scene, id));
     if (qs.some((q) => q === null)) return null;
@@ -59,16 +59,30 @@ export function evaluateClaim(scene, claim) {
     }
     return { ok: worst <= TAU, residual: worst };
   }
+  if (claim.coincide) {
+    // coincide: [P, Q]: the points are one (I.7: D falls on C). The residual
+    // is their distance relative to the reference length `scale`.
+    const [P, Q] = claim.coincide.map((id) => scene.value(id));
+    if (!P || !Q) return null;
+    const r = dist(P, Q) / Math.max(1, scale ?? 1);
+    return { ok: r <= TAU, residual: r };
+  }
   return { unsupported: true };
 }
 
 /**
  * Whether a condition holds for the givens as they stand. Forms:
  * `gt: [a, b]` (a greater than b) and `eq: [a, b, …]` (all equal), over
- * quantities of one kind. Used by `requires`, by an object's `when` and by
+ * quantities of one kind; `sameSide: [A, B, P, Q]` (P, Q on one side of AB). Used by `requires`, by an object's `when` and by
  * readout `notes`. False if an input does not exist.
  */
 export function conditionHolds(scene, q) {
+  if (q.sameSide) {
+    // sameSide: [A, B, P, Q]: P and Q strictly on the same side of line AB (I.7).
+    const [A, B, P, Q] = q.sameSide.map((id) => scene.value(id));
+    if (!A || !B || !P || !Q) return false;
+    return signedArea(A, B, P) * signedArea(A, B, Q) > 0;
+  }
   const ids = q.gt ?? q.eq;
   const vs = ids.map((id) => quantity(scene, id)?.value ?? null);
   if (vs.some((v) => v === null)) return false;
@@ -149,7 +163,7 @@ export function createReadout({ scene, data, intro, els }) {
     const lines = [];
     for (const c of claims) {
       if (step < (c.from ?? 0)) continue;
-      const r = evaluateClaim(scene, c);
+      const r = evaluateClaim(scene, c, unit);
       if (r === null) lines.push({ text: `${c.label} · —` });
       else if (r.unsupported) lines.push({ text: `${c.label} · not yet supported`, cls: "is-fail" });
       else lines.push({

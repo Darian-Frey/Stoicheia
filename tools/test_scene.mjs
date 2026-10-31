@@ -306,6 +306,20 @@ test("I.5: base angles and angles under the base stay equal", () => {
     });
 });
 
+test("I.7: only D on C satisfies the hypothesis; C's mirror is the other side", () => {
+  return Promise.all([import("../docs/data/props/07.js"), import("../docs/js/readout.js")])
+    .then(([{ default: d }, { evaluateClaim, unmetRequirement }]) => {
+      const s = createScene(d.objects);
+      assert.match(unmetRequirement(s, d.requires).text, /AD must equal AC/, "opens in the supposed case");
+      const A = s.value("A"), C = s.value("C");
+      s.move("D", C);
+      assert.equal(unmetRequirement(s, d.requires), null);
+      assert.ok(evaluateClaim(s, d.claims[0], 300).ok, "D falls on C");
+      s.move("D", { x: C.x, y: 2 * A.y - C.y }); // AB is horizontal: the mirror of C
+      assert.match(unmetRequirement(s, d.requires).text, /same side of AB/, "mirror: equal sides, other side");
+    });
+});
+
 test("transfer: places F as C is placed relative to A and AB", () => {
   const s = createScene([
     { id: "A", kind: "point", free: true, at: { x: 0, y: 0 } },

@@ -512,6 +512,10 @@ a.card:hover .card-title { color: var(--ink); }
 .fig-circle.role-given { stroke: var(--ink); }
 .fig-circle.role-result { stroke: var(--amber); }
 
+/* Stoicheia's own aids, not Euclid's (I.7's circles): muted, finely dotted. */
+.fig-circle.role-aid,
+.fig-line.role-aid { stroke: var(--ink-3); stroke-dasharray: 2 5; stroke-width: 1.25; }
+
 .fig-poly { stroke: none; fill: var(--amber); fill-opacity: 0.12; }
 .fig-poly.role-given { fill: var(--ink); }
 

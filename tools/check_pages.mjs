@@ -161,6 +161,10 @@ async function mouseDrag(from, to) {
   await wait(80);
 }
 async function dragPoint(id, x, y) {
+  // Bring the figure into view first, as a reader would scroll: a long
+  // enunciation (I.7) pushes the lower handles below the window.
+  await ev(`document.querySelector('.fig-handle[data-id="${id}"]').scrollIntoView({ block: "center" })`);
+  await wait(30);
   await mouseDrag(await centre(`.fig-handle[data-id="${id}"]`), await toScreen(x, y));
 }
 async function lastStep() {
@@ -286,6 +290,19 @@ const SPECIFIC = {
     check("I.6: with AC the greater, D and the triangles are not drawn and a note explains",
       hidden && dLabel && /AC is the greater here/.test(await status()) && /^NOT AS GIVEN/.test(await status())
       && c2[4] == null && c2[5] == null, `${await status()} ${JSON.stringify(c2)}`); // "—" reads as NaN, returned as null
+  },
+  7: async () => {
+    await go("/prop.html?p=7"); await lastStep();
+    check("I.7: opens in the supposed case, NOT AS GIVEN and outlined, with the aid circles drawn",
+      /^NOT AS GIVEN/.test(await status()) && await ev("document.querySelector('.figure').classList.contains('is-not-given')")
+      && await ev("[...document.querySelectorAll('.fig-circle.role-aid')].filter(c => !c.classList.contains('is-hidden')).length") === 2,
+      await status());
+    const C = await pointOf("C");
+    await dragPoint("D", C[0] + 5, C[1] + 3);
+    const D = await pointOf("D");
+    check("I.7: D dragged near C snaps onto it; the equalities hold and D falls on C",
+      D && D[0] === C[0] && D[1] === C[1] && holds(await status()) && /D falls on C/.test(await status()), await status());
+    // (C's mirror across AB lies outside the figure; test_scene covers that case.)
   },
 };
 
