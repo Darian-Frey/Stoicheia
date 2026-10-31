@@ -24,6 +24,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - `tools/check_pages.mjs`: headless-Chrome checks of the index and every built proposition, Node built-ins only (IMP-007 applied).
 - Definitions page (F-011): `defs.html`, `js/defs.js`, `data/foundations.js` with Heath's Definitions 1–23, Postulates 1–5 and Common Notions 1–5 (pp. 153–155, checked against the scan); anchored, highlighted entries and "Cited in" links derived from the propositions. Citation links on proposition pages now resolve (F-007).
 - `check_pages.mjs`: foundations checks (33 anchored entries, bold terms, every citation resolves, "Cited in", citation click lands highlighted, 390 px).
+- Proposition I.2 (`data/props/02.js`): Heath p. 244, checked against the scan; built and on the index. `scene.js` gains `extend` (a line produced past a point, Post. 2) and `onCircle` (naming points on a circle); `check_pages.mjs` gains I.2-specific degenerate checks.
 ### Changed
 - F-007 and F-011 Complete after the author's review of the definitions page.
 - D-005: `TESTING.md` exemption revisited after the browser check was added, and kept; new revisit trigger recorded.

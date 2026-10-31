@@ -190,6 +190,46 @@ test("polygon joins points in order and follows them", () => {
   assert.equal(s.value("ABC"), null, "a polygon on a missing vertex is null");
 });
 
+test("extend: a fixed length beyond Q on P → Q, null when P = Q", () => {
+  const s = createScene([
+    { id: "P", kind: "point", free: true, at: { x: 0, y: 0 } },
+    { id: "Q", kind: "point", free: true, at: { x: 3, y: 4 } },
+    { id: "E", kind: "point", by: "extend", of: ["P", "Q"], len: 10 },
+  ]);
+  nearPt(s.value("E"), p(9, 12), "E");
+  s.move("Q", p(0, 0));
+  assert.equal(s.value("E"), null);
+});
+
+test("onCircle: screen direction in degrees, 90 is up", () => {
+  const s = createScene([
+    { id: "O", kind: "point", free: true, at: { x: 100, y: 100 } },
+    { id: "T", kind: "point", free: true, at: { x: 150, y: 100 } },
+    { id: "c", kind: "circle", by: "circle", of: ["O", "T"] },
+    { id: "R", kind: "point", by: "onCircle", of: ["c"], deg: 0 },
+    { id: "U", kind: "point", by: "onCircle", of: ["c"], deg: 90 },
+    { id: "L", kind: "point", by: "onCircle", of: ["c"], deg: 180 },
+  ]);
+  nearPt(s.value("R"), p(150, 100), "R");
+  nearPt(s.value("U"), p(100, 50), "U");
+  nearPt(s.value("L"), p(50, 100), "L");
+  s.move("T", p(100, 100));
+  assert.equal(s.value("U"), null, "a circle of radius 0 has no such point");
+});
+
+test("I.2: AL equals BC as the givens move", () => {
+  const len = (v) => dist(v.A, v.B);
+  return import("../docs/data/props/02.js").then(({ default: d }) => {
+    const s = createScene(d.objects);
+    for (const [id, P] of [["A", p(120, 300)], ["C", p(420, 100)], ["B", p(330, 330)], ["A", p(500, 400)]]) {
+      s.move(id, P);
+      assert.ok(Math.abs(len(s.value("AL")) - len(s.value("BC"))) < 1e-9, `after moving ${id}`);
+    }
+    s.move("A", s.value("B"));
+    assert.equal(s.isDegenerate(), true, "A on B: no triangle DAB");
+  });
+});
+
 test("createScene rejects malformed data", () => {
   const A = { id: "A", kind: "point", free: true, at: { x: 0, y: 0 } };
   const B = { id: "B", kind: "point", free: true, at: { x: 1, y: 0 } };
@@ -208,6 +248,7 @@ test("createScene rejects malformed data", () => {
     [[A, B, { id: "M", kind: "point", by: "mid", of: ["A", "B"], pick: "cw" }], /only applies to intersections/],
     [[{ id: "A", kind: "point", free: true }], /finite "at"/],
     [[A, B, { id: "P", kind: "polygon", by: "polygon", of: ["A", "B"] }], /at least 3/],
+    [[A, B, { id: "E", kind: "point", by: "extend", of: ["A", "B"] }], /finite "len"/],
     [[A, B, { id: "AB", kind: "segment", by: "join", of: ["A", "B"] },
       { id: "P", kind: "polygon", by: "polygon", of: ["A", "B", "AB"] }], /points only/],
   ];

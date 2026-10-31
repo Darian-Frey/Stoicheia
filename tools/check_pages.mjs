@@ -179,6 +179,17 @@ const SPECIFIC = {
     await dragPoint("B", 380, 150);
     check("I.1: dragging apart again recovers", holds(await status()), await status());
   },
+  2: async () => {
+    await go("/prop.html?p=2"); await lastStep();
+    await dragPoint("C", 420, 120);
+    check("I.2: a longer BC still gives AL = BC", holds(await status()), await status());
+    await dragPoint("A", 290, 262);
+    check("I.2: A dropped onto B shows DEGENERATE (no triangle DAB)", (await status()) === "DEGENERATE");
+    await dragPoint("B", 150, 300);
+    check("I.2: dragging apart again recovers", holds(await status()), await status());
+    await dragPoint("C", 150, 300);
+    check("I.2: C dropped onto B shows DEGENERATE (BC has no length)", (await status()) === "DEGENERATE");
+  },
 };
 
 // ── Index ────────────────────────────────────────────────────────────

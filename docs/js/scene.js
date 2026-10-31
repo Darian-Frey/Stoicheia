@@ -16,7 +16,7 @@
 // throws; malformed data throws once, from createScene, with a message
 // naming the object.
 
-import { dist, mid, foot, xLL, xLC, xCC, signedArea } from "./geom.js";
+import { dist, dir, mid, foot, xLL, xLC, xCC, signedArea } from "./geom.js";
 
 // SPEC §Branch selection: candidates closer than DELTA · max(1, r) are
 // treated as tangent, and rule scores within TAU are treated as tied; in
@@ -38,6 +38,25 @@ const CONSTRUCTORS = {
   // Polygon: three or more points, in order; `of` may list points only.
   polygon: { kind: "polygon", arity: "points", make: (P) => ({ P }) },
   mid:    { kind: "point", arity: 2, make: ([A, B]) => mid(A, B) },
+  // Point `len` units beyond Q on the line P → Q: the far end of a line
+  // produced (Post. 2) where Euclid fixes no length.
+  extend: {
+    kind: "point", arity: 2, param: "len",
+    make: ([P, Q], len) => {
+      const u = dir(P, Q);
+      return u.x === 0 && u.y === 0 ? null : { x: Q.x + len * u.x, y: Q.y + len * u.y };
+    },
+  },
+  // Point on a circle at screen direction `deg` (0 = right, 90 = up),
+  // for naming points that Heath places on a circle without construction.
+  onCircle: {
+    kind: "point", arity: 2, param: "deg",
+    make: ([O, r], deg) => {
+      if (!(r > 0)) return null;
+      const t = (deg * Math.PI) / 180;
+      return { x: O.x + r * Math.cos(t), y: O.y - r * Math.sin(t) };
+    },
+  },
   foot:   { kind: "point", arity: 3, make: ([P, A, B]) => foot(P, A, B) },
   xLL:    { kind: "point", arity: 4, cands: ([A, B, C, D]) => xLL(A, B, C, D) },
   xLC:    { kind: "point", arity: 4, cands: ([A, B, O, r]) => xLC(A, B, O, r) },
@@ -89,6 +108,9 @@ function validate(defs) {
       arity += src.kind === "point" ? 1 : (LINEAR.has(src.kind) || src.kind === "circle") ? 2 : 1;
     }
     if (arity !== c.arity) throw new Error(`${where}: "${d.by}" needs ${c.arity} inputs after expansion, got ${arity}`);
+    if (c.param && !Number.isFinite(d[c.param])) {
+      throw new Error(`${where}: "${d.by}" needs a finite "${c.param}"`);
+    }
     if (c.cands) validatePick(d, where, seen);
     else if (d.pick !== undefined) throw new Error(`${where}: "pick" only applies to intersections`);
     if (d.mark !== undefined && (d.mark !== "label" || d.kind !== "point")) {
@@ -176,7 +198,8 @@ export function createScene(defs) {
     }
     const c = CONSTRUCTORS[d.by];
     if (c.make) {
-      const v = c.make(parts);
+      const v = c.make(parts, c.param ? d[c.param] : undefined);
+      if (v === null) return null;
       if (d.kind === "point" && !(Number.isFinite(v.x) && Number.isFinite(v.y))) return null;
       return v;
     }

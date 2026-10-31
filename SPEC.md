@@ -70,10 +70,14 @@ Constructors. `of` is flattened before the call: a point contributes one input, 
 | `angle` | angleMark | 3 | A, vertex V, B | — |
 | `mid` | point | 2 | endpoints | — |
 | `foot` | point | 3 | P, then two points of the line | — |
+| `extend` | point | 2 | P, Q; needs `len` | — |
+| `onCircle` | point | 2 | circle centre, radius; needs `deg` | — |
 | `xLL` | point | 4 | two points of each line | yes |
 | `xLC` | point | 4 | two points of the line, circle centre, radius | yes |
 | `xCC` | point | 4 | centre and radius of each circle | yes |
 | `polygon` | polygon | ≥ 3 | vertices in order (points only, not flattened) | — |
+
+`extend` is the point `len` units beyond Q on the line P → Q: the far end of a line produced (Post. 2) where Euclid fixes no length, usually a naming point (I.2's E, F); `null` when P = Q. `onCircle` is the point on the circle in screen direction `deg` (0 right, 90 up), for naming points Heath places on a circle without constructing them (I.2's H, K); `null` when the radius is 0.
 
 So `of: ["A", "B", "circA"]` gives `xLC` its four inputs (A, B, centre, radius), and `of: ["circA", "circB"]` gives `xCC` its four.
 

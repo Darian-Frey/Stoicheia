@@ -9,7 +9,14 @@ Severity vocabulary: low | medium | high.
 
 ## Open
 
-_None._
+### BUG-005: Cached modules can mix old and new code after an update
+**Status:** open
+**Found:** 2026-10-31 (author viewing I.2 locally: "scene object \"H\": unknown constructor \"onCircle\"")
+**Location:** cross-cutting (every `import` in `docs/js/`, `docs/*.html`)
+**Severity:** medium
+**Description.** Modules are fetched by plain URL with no version, so a browser that cached an older `scene.js` keeps using it while fetching a data file that needs the new one. Locally, Python's server sends no `Cache-Control` and Chrome caches heuristically; on GitHub Pages every file is `max-age=600`, so for up to ten minutes after each push a returning visitor can run new data against an old engine. The page then shows a load error, or worse, silently renders with stale behaviour. The headless checks never see it because they start with an empty cache.
+**Reproduction.** View `prop.html?p=1` (caches `scene.js`), add a constructor to `scene.js` and use it in a new data file, then open that proposition without a hard reload.
+**Notes.** Options: (a) an import map in each HTML page mapping each module to `…?v=<version>`, with one version string bumped per release (no build step, but a manual bump); (b) a `?v=` on every import statement (more places to forget); (c) accept it: the window is ten minutes on the live site, and a hard reload fixes it. Related: D-001 (no build step to stamp versions automatically).
 
 ## Fixed
 
