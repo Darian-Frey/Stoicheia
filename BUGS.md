@@ -9,16 +9,18 @@ Severity vocabulary: low | medium | high.
 
 ## Open
 
+_None._
+
+## Fixed
+
 ### BUG-005: Cached modules can mix old and new code after an update
-**Status:** open
+**Status:** fixed
 **Found:** 2026-10-31 (author viewing I.2 locally: "scene object \"H\": unknown constructor \"onCircle\"")
 **Location:** cross-cutting (every `import` in `docs/js/`, `docs/*.html`)
 **Severity:** medium
 **Description.** Modules are fetched by plain URL with no version, so a browser that cached an older `scene.js` keeps using it while fetching a data file that needs the new one. Locally, Python's server sends no `Cache-Control` and Chrome caches heuristically; on GitHub Pages every file is `max-age=600`, so for up to ten minutes after each push a returning visitor can run new data against an old engine. The page then shows a load error, or worse, silently renders with stale behaviour. The headless checks never see it because they start with an empty cache.
 **Reproduction.** View `prop.html?p=1` (caches `scene.js`), add a constructor to `scene.js` and use it in a new data file, then open that proposition without a hard reload.
-**Notes.** Options: (a) an import map in each HTML page mapping each module to `…?v=<version>`, with one version string bumped per release (no build step, but a manual bump); (b) a `?v=` on every import statement (more places to forget); (c) accept it: the window is ten minutes on the live site, and a hard reload fixes it. Related: D-001 (no build step to stamp versions automatically).
-
-## Fixed
+**Notes.** Options: (a) an import map in each HTML page mapping each module to `…?v=<version>`, with one version string bumped per release (no build step, but a manual bump); (b) a `?v=` on every import statement (more places to forget); (c) accept it: the window is ten minutes on the live site, and a hard reload fixes it. Related: D-001 (no build step to stamp versions automatically). Fixed 2026-10-31 with option (a): `tools/stamp.mjs` writes an import map into every page, generated from the files on disk, mapping each module under `docs/js/` and `docs/data/` to `?v=VERSION`, plus a versioned stylesheet and an inline entry import (a `<script src>` is not covered by import maps). `stamp.mjs --check` and `check_pages.mjs` fail if a module is missing or pages disagree; `check_pages` also confirms every script and stylesheet loads versioned. Verified: with a warm cache, a re-stamp and a normal reload fetch every module afresh. Residual: a browser holding a cached old HTML page uses the old version consistently; a mix needs an old cached page with a module missing from cache, which only versioned file names (a build step) would remove.
 
 ### BUG-004: Touch-dragging a point scrolls the page instead
 **Status:** fixed

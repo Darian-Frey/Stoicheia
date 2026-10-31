@@ -18,6 +18,7 @@ import { fileURLToPath } from "node:url";
 
 import { arcs, props, built } from "../docs/data/arcs.js";
 import { citationsIn, citationHref, usesOf } from "../docs/js/cite.js";
+import { problems as stampProblems, pages as stampedPages, versionOf } from "./stamp.mjs";
 
 const DOCS = resolve(fileURLToPath(new URL("../docs/", import.meta.url)));
 const SHOTS = (() => { const i = process.argv.indexOf("--shots"); return i > 0 ? process.argv[i + 1] : null; })();
@@ -192,6 +193,13 @@ const SPECIFIC = {
   },
 };
 
+// ── Stamps (BUG-005) ─────────────────────────────────────────────────
+const stampIssues = await stampProblems();
+check("stamps: every page's import map lists every module at one version", stampIssues.length === 0, stampIssues.join("; "));
+const VERSION = versionOf((await stampedPages())[0].html);
+const unversioned = async () => ev(`performance.getEntriesByType('resource')
+  .map(r => r.name).filter(u => /\\.(js|css)(\\?|$)/.test(u) && !u.includes('?v=${VERSION}'))`);
+
 // ── Index ────────────────────────────────────────────────────────────
 await desktop();
 await go("/");
@@ -211,6 +219,7 @@ check("index: built propositions, and only those, are links",
 check("index: problem count matches arcs.js", idx.problems === props.filter((p) => p.kind === "problem").length, `${idx.problems}`);
 check("index: every built card has a drawn miniature", idx.minis.length === built.length && idx.minis.every((n) => n > 0), JSON.stringify(idx.minis));
 check("index: miniatures have no drag handles", idx.handles === 0);
+check("stamps: index loads every script and stylesheet versioned", (await unversioned()).length === 0, JSON.stringify(await unversioned()));
 await shot("index");
 await ev("document.querySelector('a.card').click()"); await wait(800);
 check("index: first card opens its proposition", await ev("location.search") === `?p=${Math.min(...built)}`);
@@ -223,6 +232,7 @@ for (const n of built) {
   await go(`/prop.html?p=${n}`);
   check(`${tag}: page loads with its title`, await ev("document.getElementById('prop-title').textContent") === data.title);
   check(`${tag}: one pip per step`, await ev("document.querySelectorAll('.pip').length") === data.steps.length);
+  check(`${tag}: every script and stylesheet loaded versioned`, (await unversioned()).length === 0, JSON.stringify(await unversioned()));
 
   const footers = [];
   for (let i = 0; i < data.steps.length; i++) {
@@ -286,6 +296,7 @@ const want = [
 ];
 check("defs: 23 definitions, 5 postulates, 5 common notions, anchored in order",
   JSON.stringify(ids) === JSON.stringify(want), `${ids.length} entries`);
+check("stamps: defs page loads every script and stylesheet versioned", (await unversioned()).length === 0, JSON.stringify(await unversioned()));
 check("defs: Heath's bold terms rendered", await ev("document.querySelectorAll('#def-1 .term').length") === 1);
 await shot("defs");
 

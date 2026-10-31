@@ -43,6 +43,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com). References F-, D-
 - `cite` and `uses` fields from the proposition schema (IMP-006).
 - `proof` field from the proposition schema (D-010).
 ### Fixed
+- Browsers could run cached old modules against new data after an update: every page now carries an import map of versioned module URLs written by new `tools/stamp.mjs`, checked by `stamp.mjs --check` and `check_pages.mjs` (BUG-005).
 - Touch-dragging a point no longer scrolls the page: `touch-action: none` moved to the figure's `<svg>`, with a non-passive `touchmove` fallback (BUG-004).
 - `ccw`/`cw` restricted to `xCC` in SPEC §Branch selection; they cannot choose between line–circle candidates (BUG-003).
 - I.1's C is `pick: "cw"` (above AB on screen), not `"ccw"`: SPEC, D-008 and AV-003 corrected (BUG-002, found by `test_geom.mjs`).

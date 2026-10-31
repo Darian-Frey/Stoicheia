@@ -37,13 +37,15 @@ node tools/test_geom.mjs                 # kernel unit tests (Phase 1)
 node tools/test_scene.mjs                # scene recompute, branch picks, AV-001/AV-003 drags
 node tools/test_cite.mjs                 # citation grammar, derived footers and uses
 node tools/check_pages.mjs               # headless Chrome: index + every built prop (needs Chrome; CHROME=path to override)
+node tools/stamp.mjs                     # re-version every module URL in the pages' import maps (BUG-005)
+node tools/stamp.mjs --check             # verify the import maps are complete and consistent
 node tools/lint_props.mjs                # schema, citations, drag-grid sweep (Phase 2+)
 python3 tools/check_xrefs.py             # doc cross-reference check (Phase 5)
 ```
 
 Tool scripts are `.mjs` and need Node ≥ 22.7: they import `docs/` modules, which are `.js` with no `package.json`, relying on Node's ES-module syntax detection (IMP-002).
 
-Run `check_pages.mjs` after any change under `docs/` and before marking a feature or phase Complete; `--shots DIR` saves screenshots for a visual check. It checks every proposition in `arcs.js` `built` generically; add proposition-specific drag checks to its `SPECIFIC` table. Visual fidelity to the mock-up is still the author's call.
+Before every commit that changes anything under `docs/`, run `node tools/stamp.mjs` so returning visitors fetch the new code rather than mixing cached old modules with new ones (BUG-005); never edit the `<!-- stamp -->` blocks by hand. Run `check_pages.mjs` after any change under `docs/` and before marking a feature or phase Complete; `--shots DIR` saves screenshots for a visual check. It checks every proposition in `arcs.js` `built` generically; add proposition-specific drag checks to its `SPECIFIC` table. Visual fidelity to the mock-up is still the author's call.
 
 ## Conventions
 
